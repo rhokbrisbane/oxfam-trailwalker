@@ -200,6 +200,9 @@ function initMap() {
             { lat: -27.4654489, lng: 152.9279491 },
             { lat: -27.4654489, lng: 152.9277872 }
         ];
+        
+        updatePathLength(walkRouteCoordinates);
+
         var walkRoute = new google.maps.Polyline({
             path: walkRouteCoordinates,
             geodesic: true,
@@ -232,4 +235,15 @@ function initMap() {
     }, function() {
         handleLocationError(true, map.getCenter());
     });
+}
+
+function updatePathLength(listOfCoordinates) {
+
+    var measurablePath = listOfCoordinates.map(function(e) {
+        return [e.lat, e.lng]
+    })
+
+    var km = Math.round(measurePath(measurablePath) * 10) / 10;
+
+    $('#length').text(km + "km");
 }
