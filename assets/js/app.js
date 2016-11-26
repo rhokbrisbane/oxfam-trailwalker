@@ -170,55 +170,55 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
     getCurrentPosition(map, true, function() {
-      setupRoutes(map);
+        setupRoutes(map);
     });
 }
 
 function setupRoutes(map) {
-      // @TODO Make this Dynamic
-      var walkRouteCoordinates = [
-          { lat: -27.4650419, lng: 152.9268182 },
-          { lat: -27.4654989, lng: 152.9282448 },
-          { lat: -27.4654489, lng: 152.9279491 },
-          { lat: -27.4654489, lng: 152.9277872 }
-      ];
+    // @TODO Make this Dynamic
+    var walkRouteCoordinates = [
+        { lat: -27.4650419, lng: 152.9268182 },
+        { lat: -27.4654989, lng: 152.9282448 },
+        { lat: -27.4654489, lng: 152.9279491 },
+        { lat: -27.4654489, lng: 152.9277872 }
+    ];
 
-      updatePathLengthView(calculatePathLength(walkRouteCoordinates));
+    updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
-      var walkRoute = new google.maps.Polyline({
-          path: walkRouteCoordinates,
-          geodesic: true,
-          strokeColor: walkStroke,
-          strokeOpacity: strokeOpacity,
-          strokeWeight: strokeWeight
-      });
+    var walkRoute = new google.maps.Polyline({
+        path: walkRouteCoordinates,
+        geodesic: true,
+        strokeColor: walkStroke,
+        strokeOpacity: strokeOpacity,
+        strokeWeight: strokeWeight
+    });
 
-      walkRoute.setMap(map);
+    walkRoute.setMap(map);
 
-      // console.log(pos.lat);
-      // console.log(pos.lng);
-      // console.log(map.getBounds().getSouthWest().lat())
-      // console.log(map.getBounds().getSouthWest().lng())
-      // console.log(map.getBounds().getNorthEast().lat())
-      // console.log(map.getBounds().getNorthEast().lng())
+    // console.log(pos.lat);
+    // console.log(pos.lng);
+    // console.log(map.getBounds().getSouthWest().lat())
+    // console.log(map.getBounds().getSouthWest().lng())
+    // console.log(map.getBounds().getNorthEast().lat())
+    // console.log(map.getBounds().getNorthEast().lng())
 
-      // getNodes(
-      //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
-      //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
-      //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
-      //     pos.lng + .25// map.getBounds().getNorthEast().lng()
-      // );
-      getNodes(
-          map.getBounds().getSouthWest().lat(),
-          map.getBounds().getSouthWest().lng(),
-          map.getBounds().getNorthEast().lat(),
-          map.getBounds().getNorthEast().lng()
-      );
+    // getNodes(
+    //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
+    //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
+    //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
+    //     pos.lng + .25// map.getBounds().getNorthEast().lng()
+    // );
+    getNodes(
+        map.getBounds().getSouthWest().lat(),
+        map.getBounds().getSouthWest().lng(),
+        map.getBounds().getNorthEast().lat(),
+        map.getBounds().getNorthEast().lng()
+    );
 
-      /* Deals with Getting Directions from Google API and Rendering the Polyline */
-      getDirections(
-          [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
-      );
+    /* Deals with Getting Directions from Google API and Rendering the Polyline */
+    getDirections(
+        [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
+    );
 }
 
 // Returns path length in km
@@ -257,6 +257,9 @@ function updatePathLengthView(lengthInKm) {
 function setDirections(result) {
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
+        /*markerOptions: {
+            icon: 'https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150',
+        },*/
         polylineOptions: {
             strokeColor: directionsStroke,
             strokeOpacity: strokeOpacity,
@@ -267,9 +270,9 @@ function setDirections(result) {
     directionsRenderer.setDirections(result);
 }
 
-var timerId = setInterval(function () {
+var timerId = setInterval(function() {
     if (!userAllowedTracking) {
-      return false;
+        return false;
     }
 
     getCurrentPosition(map, false, null);
