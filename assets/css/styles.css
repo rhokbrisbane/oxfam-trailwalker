@@ -57,6 +57,28 @@ body {
     font-family: 'Oxfam-Global-Headline', 'Arial', sans-serif;
 }
 
+.filter-social-icons {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 10px 15px;
+    z-index: 5;
+    background-color: #fff;
+}
+
+.filter-social-icons a {
+    color: #0c8848;
+    margin-right: 15px;
+}
+
+.fa {
+    margin-right: 10px;
+}
+
+.filter-social-icons a:last-child {
+    margin-right: 0;
+}
+
 .filter-map-buttons {
     position: absolute;
     bottom: 0;
