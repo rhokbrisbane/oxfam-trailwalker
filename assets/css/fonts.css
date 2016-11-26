@@ -1,0 +1,12 @@
+@font-face {
+    font-family:'Oxfam-Global-Headline';
+    src: url('../fonts/Oxfam-Global-Headline-Regular.eot');
+	src: url('../fonts/Oxfam-Global-Headline-Regular.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/Oxfam-Global-Headline-Regular.woff2') format('woff2'),
+		url('../fonts/Oxfam-Global-Headline-Regular.woff') format('woff'),
+		url('../fonts/Oxfam-Global-Headline-Regular.svg#Oxfam-Global-Headline-Regular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+0020-2074;
+}

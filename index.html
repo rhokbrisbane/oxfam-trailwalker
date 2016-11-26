@@ -5,13 +5,38 @@
     <title>Find Me a Walk</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css" />
 </head>
 
 <body>
-    <div id="map">
+
+    <div class="site-container">
+
+        <div class="filter-search-box">
+            <div class="filter-search-logo">
+                <h1>Find Me A Walk</h1>
+            </div>
+            <div class="filter-search-track-details">
+                <span class="filter-search-name">Track Name</span><span class="filter-search-length">10km</span><span class="filter-search-difficulty">Hard</span>
+            </div>
+            <div class="filter-map-details">
+            </div>
+        </div>
+
+        <div class="filter-map-buttons">
+            <button>Too Far</button><button>Too Short</button>
+        </div>
+
+        <div id="map">
+
+        </div>
 
     </div>
+
+
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="assets/js/app.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9WQZdYoh7Mt4GjbF_HAQncunbL0UAIk8&callback=initMap"></script>
