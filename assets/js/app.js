@@ -1,6 +1,6 @@
 function initMap() {
     var mapOptions = {
-        zoom: 18,
+        zoom: 12,
         disableDefaultUI: true,
         draggable: true,
         scrollwheel: true,
@@ -27,6 +27,13 @@ function initMap() {
             position: new google.maps.LatLng(pos.lat, pos.lng),
             map: map
         });
+
+        getNodes(
+            map.getBounds().getSouthWest().lat(),
+            map.getBounds().getSouthWest().lng(),
+            map.getBounds().getNorthEast().lat(),
+            map.getBounds().getNorthEast().lng()
+        );
     }, function () {
         handleLocationError(true, map.getCenter());
     });
