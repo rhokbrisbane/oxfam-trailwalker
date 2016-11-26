@@ -1,5 +1,19 @@
-function initMap() {
-    var mapOptions = {
+/*
+ * SETTING STLYING VARIABLES FOR PATH CONSTRUCTION
+ * Stlying Variables for Path Routes 
+ */
+var walkStroke = '#50af47';
+var directionsStroke = '#e70052';
+var strokeOpacity = 0.5;
+var strokeWeight = 10;
+
+/* 
+ * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
+ * Returns the Google Map Options 
+ */
+
+function getMapOptions() {
+    return {
         zoom: 12,
         disableDefaultUI: true,
         draggable: true,
@@ -138,8 +152,21 @@ function initMap() {
         //minZoom: 6,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
+}
 
-    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+/*
+ *
+ * Logic Not Related to Variable Setting Lives Here
+ *
+ *
+ */
+
+
+/* Creates the Google Map and sets Feature Flags and Options */
+function initMap() {
+
+    // Instantiates Google Map Object  
+    map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
     /* Get Current Geoloaction */
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -157,6 +184,7 @@ function initMap() {
         });
 
 
+        // @TODO Make this Dynamic
         var walkRouteCoordinates = [
             { lat: -27.4650419, lng: 152.9268182 },
             { lat: -27.4654989, lng: 152.9282448 },
@@ -169,9 +197,9 @@ function initMap() {
         var walkRoute = new google.maps.Polyline({
             path: walkRouteCoordinates,
             geodesic: true,
-            strokeColor: '#50af47',
-            strokeOpacity: 0.5,
-            strokeWeight: 10
+            strokeColor: walkStroke,
+            strokeOpacity: strokeOpacity,
+            strokeWeight: strokeWeight
         });
 
         walkRoute.setMap(map);
@@ -198,7 +226,7 @@ function initMap() {
 
         /* Deals with Getting Directions from Google API and Rendering the Polyline */
         getDirections(
-            [-27.4654489, 152.9277872], [-27.4650419, 152.9268182], 'transit', 'AIzaSyC9WQZdYoh7Mt4GjbF_HAQncunbL0UAIk8'
+            [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
         );
 
     }, function() {
@@ -206,6 +234,11 @@ function initMap() {
     });
 }
 
+
+/*
+ * Updates UI Element Tracking Distance of Path 
+ * Measured in KMs
+ */
 function updatePathLength(listOfCoordinates) {
 
     var measurablePath = listOfCoordinates.map(function(e) {
@@ -217,9 +250,21 @@ function updatePathLength(listOfCoordinates) {
     $('#length').text(km + "km");
 }
 
-// Sets the Directions and Renders then onto the Map
+
+/* 
+ * Loads the Directions into the Renderer which 
+ * outputs them onto the Map
+ */
 function setDirections(result) {
-    var directionsDisplay = new google.maps.DirectionsRenderer();
-    directionsDisplay.setMap(map);
-    directionsDisplay.setDirections(result);
+    // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
+    var directionsRenderer = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: directionsStroke,
+            strokeOpacity: strokeOpacity,
+            strokeWeight: strokeWeight,
+        }
+    });
+    console.log(directionsRenderer);
+    directionsRenderer.setMap(map);
+    directionsRenderer.setDirections(result);
 }

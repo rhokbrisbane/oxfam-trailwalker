@@ -1,4 +1,4 @@
-function getDirections(origin, destination, mode, key) {
+function getDirections(origin, destination) {
 
     // Building the Query String for the Google API
     var request = {
