@@ -47,6 +47,19 @@ function initMap() {
 
         walkRoute.setMap(map);
 
+console.log(pos.lat);
+console.log(pos.lng);
+console.log(map.getBounds().getSouthWest().lat())
+console.log(map.getBounds().getSouthWest().lng())
+console.log(map.getBounds().getNorthEast().lat())
+console.log(map.getBounds().getNorthEast().lng())
+
+        // getNodes(
+        //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
+        //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
+        //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
+        //     pos.lng + .25// map.getBounds().getNorthEast().lng()
+        // );
         getNodes(
             map.getBounds().getSouthWest().lat(),
             map.getBounds().getSouthWest().lng(),
