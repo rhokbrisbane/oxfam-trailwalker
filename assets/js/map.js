@@ -16,6 +16,8 @@ function getCurrentPosition(map, newMarker, callback) {
             });
         }
 
+        userAllowedTracking = true;
+
         if (callback) {
             callback();
         }

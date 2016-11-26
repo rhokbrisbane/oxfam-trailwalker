@@ -161,6 +161,8 @@ function getMapOptions() {
  *
  */
 
+var map;
+var userAllowedTracking = false;
 
 /* Creates the Google Map and sets Feature Flags and Options */
 function initMap() {
@@ -264,3 +266,11 @@ function setDirections(result) {
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);
 }
+
+var timerId = setInterval(function () {
+    if (!userAllowedTracking) {
+      return false;
+    }
+
+    getCurrentPosition(map, false, null);
+}, 5000);
