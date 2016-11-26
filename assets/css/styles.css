@@ -19,12 +19,12 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 20px;
+    padding: 10px;
     z-index: 5;
 }
 
 .filter-search-logo, .filter-search-track-details, .filter-map-details {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .filter-search-track-details {
@@ -34,7 +34,7 @@ body {
 .filter-search-track-details span {
     display: inline-block;
     padding: 5px 15px;
-    margin-right: 20px;
+    margin-right: 10px;
     border: none;
     color: #0c8848;
     background-color: #fff;
@@ -61,14 +61,14 @@ body {
     position: absolute;
     bottom: 0;
     right: 0;
-    padding: 20px;
+    padding: 10px;
     z-index: 5;
 }
 
 .filter-map-buttons button {
     display: inline-block;
     padding: 0 15px;
-    margin-right: 20px;
+    margin-right: 10px;
     border: none;
     color: #0c8848;
     background-color: #fff;
@@ -84,18 +84,6 @@ body {
 
     body {
         font-size: 0.8em;
-    }
-
-    .filter-search-box, .filter-map-buttons {
-        padding: 10px;
-    }
-
-    .filter-search-logo {
-        margin-bottom: 10px;
-    }
-
-    .filter-map-buttons button,  .filter-search-track-details span {
-        margin-right: 10px;
     }
 
 }
