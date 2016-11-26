@@ -1,22 +1,24 @@
 function getCurrentPosition(map, newMarker, callback) {
     /* Get Current Geoloaction */
     navigator.geolocation.getCurrentPosition(function(position) {
+        userAllowedTracking = true;
+
         var pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         };
 
-        map.panTo(pos);
-
         /* Create You are here Marker Point */
         if (newMarker) {
-            marker = new google.maps.Marker({
+            myMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(pos.lat, pos.lng),
                 map: map
             });
+        } else {
+            myMarker.setPosition(new google.maps.LatLng(pos.lat, pos.lng));
         }
 
-        userAllowedTracking = true;
+        map.panTo(pos);
 
         if (callback) {
             callback();

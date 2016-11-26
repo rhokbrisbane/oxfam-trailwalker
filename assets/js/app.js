@@ -163,6 +163,7 @@ function getMapOptions() {
 
 var map;
 var userAllowedTracking = false;
+var myMarker;
 
 /* Creates the Google Map and sets Feature Flags and Options */
 function initMap() {
