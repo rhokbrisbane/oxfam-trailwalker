@@ -3,7 +3,7 @@
  * Stlying Variables for Path Routes 
  */
 var walkStroke = '#50af47';
-var directionsStroke = '#e70052';
+var directionsStroke = '#0b9cda';
 var strokeOpacity = 0.5;
 var strokeWeight = 10;
 
@@ -22,127 +22,127 @@ function getMapOptions() {
         mapTypeControl: false,
         scaleControl: false,
         styles: [{
-            "elementType": "geometry",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#f5f5f5"
+                    "color": "#f5f5f5"
                 }]
-          },
-          {
-            "elementType": "labels.icon",
+            },
+            {
+                "elementType": "labels.icon",
                 "stylers": [{
-                "visibility": "off"
+                    "visibility": "off"
                 }]
-          },
-          {
-            "elementType": "labels.text.fill",
+            },
+            {
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#616161"
+                    "color": "#616161"
                 }]
-          },
-          {
-            "elementType": "labels.text.stroke",
+            },
+            {
+                "elementType": "labels.text.stroke",
                 "stylers": [{
-                "color": "#f5f5f5"
+                    "color": "#f5f5f5"
                 }]
-          },
-          {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#bdbdbd"
+                    "color": "#bdbdbd"
                 }]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#eeeeee"
+                    "color": "#eeeeee"
                 }]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#757575"
+                    "color": "#757575"
                 }]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#e5e5e5"
+                    "color": "#e5e5e5"
                 }]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-          },
-          {
-            "featureType": "road",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#ffffff"
+                    "color": "#ffffff"
                 }]
-          },
-          {
-            "featureType": "road.arterial",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#757575"
+                    "color": "#757575"
                 }]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#dadada"
+                    "color": "#dadada"
                 }]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#616161"
+                    "color": "#616161"
                 }]
-          },
-          {
-            "featureType": "road.local",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-          },
-          {
-            "featureType": "transit.line",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#e5e5e5"
+                    "color": "#e5e5e5"
                 }]
-          },
-          {
-            "featureType": "transit.station",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#eeeeee"
+                    "color": "#eeeeee"
                 }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#c9c9c9"
+                    "color": "#c9c9c9"
                 }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-              }
+            }
         ],
         zoomControl: true,
         zoomControlOptions: {
@@ -245,8 +245,8 @@ function calculatePathLength(listOfCoordinates) {
     /* If the distance between the starting point and the end point is more than 200m
      * then we assume the walk is an "out and back" where we need to return along the
      * same path to the starting point
-     */ 
-    if (getDistance(measurablePath[0], measurablePath[measurablePath.length-1]) > 0.2) {
+     */
+    if (getDistance(measurablePath[0], measurablePath[measurablePath.length - 1]) > 0.2) {
         pathLength *= 2;
     }
 
@@ -276,7 +276,6 @@ function setDirections(result) {
             strokeWeight: strokeWeight,
         }
     });
-    console.log(directionsRenderer);
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);
 }
