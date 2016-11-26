@@ -53,6 +53,10 @@ function initMap() {
             map.getBounds().getNorthEast().lat(),
             map.getBounds().getNorthEast().lng()
         );
+
+        getDirections(
+            [-27.4654489, 152.9277872], [-27.4650419, 152.9268182], 'transit', 'AIzaSyC9WQZdYoh7Mt4GjbF_HAQncunbL0UAIk8'
+        );
     }, function() {
         handleLocationError(true, map.getCenter());
     });
