@@ -36,7 +36,7 @@ body {
     padding: 5px 15px;
     margin-right: 10px;
     border: none;
-    color: #0c8848;
+    color: #50af47;
     background-color: #fff;
     font-family: 'Arial', sans-serif;
     font-size: 1em;
@@ -74,10 +74,23 @@ body {
     background-color: #fff;
     font-family: 'Oxfam-Global-Headline', 'Arial', sans-serif;
     font-size: 1em;
+    -webkit-transition: all 200ms ease-in-out;
+    -moz-transition: all 200ms ease-in-out;
+    -o-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+}
+
+.filter-map-buttons button:hover {
+    color: #fff;
+    background-color: #0c8848;
 }
 
 .filter-map-buttons button:last-child {
     margin-right: 0;
+}
+
+*:focus {
+    outline: 0;
 }
 
 @media screen and (max-width: 850px) {
@@ -87,3 +100,5 @@ body {
     }
 
 }
+
+#0b9cda
