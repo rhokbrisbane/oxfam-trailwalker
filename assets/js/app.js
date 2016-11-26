@@ -48,6 +48,13 @@ function initMap() {
         walkRoute.setMap(map);
 
     }, function() {
+        getNodes(
+            map.getBounds().getSouthWest().lat(),
+            map.getBounds().getSouthWest().lng(),
+            map.getBounds().getNorthEast().lat(),
+            map.getBounds().getNorthEast().lng()
+        );
+    }, function() {
         handleLocationError(true, map.getCenter());
     });
 }
