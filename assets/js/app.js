@@ -164,74 +164,59 @@ function getMapOptions() {
 
 /* Creates the Google Map and sets Feature Flags and Options */
 function initMap() {
-
     // Instantiates Google Map Object  
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
-    /* Get Current Geoloaction */
-    navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
-
-        map.panTo(pos);
-
-        /* Create You are here Marker Point */
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(pos.lat, pos.lng),
-            map: map
-        });
-
-
-        // @TODO Make this Dynamic
-        var walkRouteCoordinates = [
-            { lat: -27.4650419, lng: 152.9268182 },
-            { lat: -27.4654989, lng: 152.9282448 },
-            { lat: -27.4654489, lng: 152.9279491 },
-            { lat: -27.4654489, lng: 152.9277872 }
-        ];
-
-        updatePathLengthView(calculatePathLength(walkRouteCoordinates));
-
-        var walkRoute = new google.maps.Polyline({
-            path: walkRouteCoordinates,
-            geodesic: true,
-            strokeColor: walkStroke,
-            strokeOpacity: strokeOpacity,
-            strokeWeight: strokeWeight
-        });
-
-        walkRoute.setMap(map);
-
-        // console.log(pos.lat);
-        // console.log(pos.lng);
-        // console.log(map.getBounds().getSouthWest().lat())
-        // console.log(map.getBounds().getSouthWest().lng())
-        // console.log(map.getBounds().getNorthEast().lat())
-        // console.log(map.getBounds().getNorthEast().lng())
-
-        // getNodes(
-        //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
-        //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
-        //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
-        //     pos.lng + .25// map.getBounds().getNorthEast().lng()
-        // );
-        getNodes(
-            map.getBounds().getSouthWest().lat(),
-            map.getBounds().getSouthWest().lng(),
-            map.getBounds().getNorthEast().lat(),
-            map.getBounds().getNorthEast().lng()
-        );
-
-        /* Deals with Getting Directions from Google API and Rendering the Polyline */
-        getDirections(
-            [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
-        );
-
-    }, function() {
-        handleLocationError(true, map.getCenter());
+    getCurrentPosition(map, true, function() {
+      setupRoutes(map);
     });
+}
+
+function setupRoutes(map) {
+      // @TODO Make this Dynamic
+      var walkRouteCoordinates = [
+          { lat: -27.4650419, lng: 152.9268182 },
+          { lat: -27.4654989, lng: 152.9282448 },
+          { lat: -27.4654489, lng: 152.9279491 },
+          { lat: -27.4654489, lng: 152.9277872 }
+      ];
+
+      updatePathLengthView(calculatePathLength(walkRouteCoordinates));
+
+      var walkRoute = new google.maps.Polyline({
+          path: walkRouteCoordinates,
+          geodesic: true,
+          strokeColor: walkStroke,
+          strokeOpacity: strokeOpacity,
+          strokeWeight: strokeWeight
+      });
+
+      walkRoute.setMap(map);
+
+      // console.log(pos.lat);
+      // console.log(pos.lng);
+      // console.log(map.getBounds().getSouthWest().lat())
+      // console.log(map.getBounds().getSouthWest().lng())
+      // console.log(map.getBounds().getNorthEast().lat())
+      // console.log(map.getBounds().getNorthEast().lng())
+
+      // getNodes(
+      //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
+      //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
+      //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
+      //     pos.lng + .25// map.getBounds().getNorthEast().lng()
+      // );
+      getNodes(
+          map.getBounds().getSouthWest().lat(),
+          map.getBounds().getSouthWest().lng(),
+          map.getBounds().getNorthEast().lat(),
+          map.getBounds().getNorthEast().lng()
+      );
+
+      /* Deals with Getting Directions from Google API and Rendering the Polyline */
+      getDirections(
+          [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
+      );
 }
 
 // Returns path length in km
