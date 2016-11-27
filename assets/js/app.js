@@ -231,8 +231,8 @@ function initMap() {
             position: new google.maps.LatLng(walkRouteStartingPoint.lat, walkRouteStartingPoint.lng),
             map: map,
             icon: {
-                url: 'assets/img/start_marker.svg',
-                scaledSize: new google.maps.Size(30, 45.8),
+                url: 'assets/img/walk.svg',
+                scaledSize: new google.maps.Size(30, 30),
             }
         });
 
