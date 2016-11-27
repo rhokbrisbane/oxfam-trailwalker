@@ -11,6 +11,7 @@ var strokeWeight = 10;
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
  */
 var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
+var DEFAULT_TRAIL_NAME = "Yours to discover!"
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -189,12 +190,16 @@ function initMap() {
         function(data) {
             var walkRoute = getRandomWalkFromOsmDataset(data);
 
-            renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
+            renderWalk(walkRoute, pos);
         }
     );
     }
 
-    function renderWalk(walkRouteCoordinates, pos) {
+    function renderWalk(walkRoute, pos) {
+        updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
+
+        var walkRouteCoordinates = walkRoute.nodes;
+
     updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
     var walkRoute = new google.maps.Polyline({
@@ -244,6 +249,9 @@ function updatePathLengthView(lengthInKm) {
     $('#length').text(km + "km");
 }
 
+function updateTrailNameView(trailName) {
+    $('#trailName').text(trailName);
+}
 
 /* 
  * Loads the Directions into the Renderer which 

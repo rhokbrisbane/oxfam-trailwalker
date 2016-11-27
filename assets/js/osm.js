@@ -10,7 +10,10 @@ function getOsmNodes(slat, slng, nlat, nlng, callback) {
   }
 
   var bbox = slat.toString() + ',' + slng.toString() + ',' + nlat.toString() + ',' + nlng.toString();
-  var url = 'https://overpass-api.de/api/interpreter?data=[out:json];way[highway=path][foot=yes][surface=ground](' + bbox + ');out body;>;out skel qt;';
+
+  var osmQuery ='[out:json];way[highway=path][foot=yes][surface=ground](' + bbox + ');out body;>;out skel qt;';
+
+  var url = 'https://overpass-api.de/api/interpreter?data=' + osmQuery;
 
   $.get(url, callback);
 }
@@ -39,10 +42,6 @@ function getRandomWalkFromOsmDataset(data) {
   chosenWalk.nodes = nodesWithGeoData;
 
   return chosenWalk
-}
-
-function osmWayToWalkRouteCoordinates(wayData) {
-  return wayData.nodes;
 }
 
 // distance.js from https://github.com/Maciek416/gps-distance/
