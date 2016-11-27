@@ -236,14 +236,15 @@ function initMap() {
             }
         });
 
-        var end = new google.maps.Marker({
-            position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
-            map: map,
-            icon: {
-                url: 'assets/img/end_marker.svg',
-                scaledSize: new google.maps.Size(30, 45.8),
-            }
-        });
+        // Finish Marker
+        // var end = new google.maps.Marker({
+        //     position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
+        //     map: map,
+        //     icon: {
+        //         url: 'assets/img/end_marker.svg',
+        //         scaledSize: new google.maps.Size(30, 45.8),
+        //     }
+        // });
     }
 }
 
