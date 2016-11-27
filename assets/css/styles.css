@@ -129,6 +129,16 @@ body {
     cursor: pointer;
 }
 
+.submit:hover {
+    color: #fff !important;
+    background-color: #0b9cda;
+}
+
+.length:hover {
+    color: #fff;
+    background-color: #0c8848;
+}
+
 *:focus {
     outline: 0;
 }
