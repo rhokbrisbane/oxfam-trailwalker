@@ -187,16 +187,14 @@ function getMapOptions() {
 
 $(document).ready(function() {
     $('#too_short').on('click', function() {
-        console.log("running");
-        CurrentTargetLength *= ROUTE_LENGTHENING_PERCENTAGE;
+        CurrentTargetLength = Math.min(CurrentTargetLength * ROUTE_LENGTHENING_PERCENTAGE, 5);
         setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
     });
 
     $('#too_long').on('click', function() {
-        CurrentTargetLength /= ROUTE_LENGTHENING_PERCENTAGE;
+        CurrentTargetLength = Math.max(CurrentTargetLength / ROUTE_LENGTHENING_PERCENTAGE, 0.5);
         setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
     });
-
 });
 
 /* Creates the Google Map and sets Feature Flags and Options */

@@ -96,7 +96,7 @@ function getRandomWalkFromOsmDataset(data, targetLength) {
         leeway *= 2;
     }
 
-    console.log("Selecting a random walk from a total of ", walks.length, " options")
+  console.log("Selecting a random walk from a total of ", walks.length, " options looking for", targetLength, 'km')
 
     // Select a random one
     return walks[Math.floor(Math.random() * walks.length)];
