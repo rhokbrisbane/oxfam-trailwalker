@@ -1,3 +1,7 @@
+// Constants
+var PERCENTAGE_LEEWAY_FOR_TARGET_LENGTH = 0.2;
+var CLOSE_ENOUGH_TO_CONSIDER_ROUND_TRIP = 0.2 /* km */;
+
 /*
  * Happy cache
  * TODO: localstorage?
@@ -15,33 +19,110 @@ function getOsmNodes(slat, slng, nlat, nlng, callback) {
 
   var url = 'https://overpass-api.de/api/interpreter?data=' + osmQuery;
 
-  $.get(url, callback);
+  $.get(url, function(data) {
+    data = addNodeInformation(data);
+    data = addDistanceInformation(data);
+
+    osmDataCache = data;
+    callback(data);
+  });
 }
 
-function getRandomWalkFromOsmDataset(data) {
-  // Filter down only to our walks
-  var walks = data.elements.filter(
-    function(e) { 
-      if (e.type === 'way') return e; 
+function addDistanceInformation(data) {
+  var elementsWithDistance = data.elements.map(function (e) {
+      if (onlyWays(e)) {
+        e.tags.distance = calculatePathLength(e.nodes);
+      }
+
+      return e;
     });
-  
-  // Select a random one
-  var chosenWalk = walks[Math.floor(Math.random() * walks.length)];
 
-  // Find all the nodes for our random walk
-  var nodesWithGeoData = chosenWalk.nodes.map(function(wayNode) {
-    var osmNode = data.elements.filter(function(node) {
-      return node.type === 'node' 
-              && node.id === wayNode;
-    })[0];
+    data.elements = elementsWithDistance;
 
-    return {lat: osmNode.lat, lng: osmNode.lon};
+    return data;
+}
+
+function addNodeInformation(data) {
+  var augmentedData = data.elements.map(function(element) {
+    if (onlyWays(element)) {
+      // Find all the nodes for our walk
+      var nodesWithGeoData = element.nodes.map(function(wayNode) {
+
+        // Find the node information for our way node
+        var osmNode = data.elements.filter(function(node) {
+          return node.type === 'node' 
+                  && node.id === wayNode;
+        })[0];
+
+        return {lat: osmNode.lat, lng: osmNode.lon};
+      });
+
+      // Throw them all together
+      element.nodes = nodesWithGeoData;
+    }
+
+    return element;
   });
 
-  // Throw them all together
-  chosenWalk.nodes = nodesWithGeoData;
+  // Remove the node information since it's all now in the ways
+  data.elements = augmentedData.filter(onlyWays);
 
-  return chosenWalk
+  return data;
+}
+
+function getRandomWalkFromOsmDataset(data, targetLength) {
+  if (data.elements.length < 1) {
+    return;
+  }
+
+  var walks = [];
+  var leeway = PERCENTAGE_LEEWAY_FOR_TARGET_LENGTH;
+
+  // TODO: how far is too far before we say we've got nothing?
+  while (true) {
+
+    // Filter down only to walks close to our target length
+    walks = data.elements.filter(function (walk) {
+      return walk.tags.distance < (targetLength * (1 + leeway))
+              && walk.tags.distance > (targetLength * (1 - leeway))
+    });
+
+    if (walks.length > 0) {
+      break;
+    }
+
+    // No walks near this, expand our length and try again :(
+    leeway *= 2;
+  }
+
+  console.log("Selecting a random walk from a total of ", walks.length, " options")
+  
+  // Select a random one
+  return walks[Math.floor(Math.random() * walks.length)];
+}
+
+function onlyWays(e) {
+  return e.type === 'way'; 
+}
+
+
+// Returns path length in km
+function calculatePathLength(listOfCoordinates) {
+    var measurablePath = listOfCoordinates.map(function(e) {
+        return [e.lat, e.lng];
+    })
+
+    var pathLength = measurePath(measurablePath);
+
+    /* If the distance between the starting point and the end point is more than 200m
+     * then we assume the walk is an "out and back" where we need to return along the
+     * same path to the starting point
+     */
+    if (getDistance(measurablePath[0], measurablePath[measurablePath.length - 1]) > CLOSE_ENOUGH_TO_CONSIDER_ROUND_TRIP) {
+        pathLength *= 2;
+    }
+
+    return pathLength;
 }
 
 // distance.js from https://github.com/Maciek416/gps-distance/

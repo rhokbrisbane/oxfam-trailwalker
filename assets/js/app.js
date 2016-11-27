@@ -18,7 +18,8 @@ var strokeWeight = 10;
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
  */
 var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
-var DEFAULT_TRAIL_NAME = "Yours to discover!"
+var DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
+var DEFAULT_TRAIL_NAME = "Yours to discover!";
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -182,10 +183,12 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
     getCurrentPosition(map, true, function(pos) {
-        setupRoutes(map, pos);
+        setupRoutes(map, pos, DEFAULT_ROUTE_TARGET_LENGTH);
     });
+}
 
-    function setupRoutes(map, pos) {
+// Fetch a random route and render it
+function setupRoutes(map, pos, targetRouteLength) {
         // TODO: here would be a good place to check for a static walk ID
 
         // fetch a random walk from OSM near us
@@ -195,14 +198,15 @@ function initMap() {
             pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
             pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
             function(data) {
-                var walkRoute = getRandomWalkFromOsmDataset(data);
+                var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
 
                 renderWalk(walkRoute, pos);
             }
         );
-    }
+}
 
-    function renderWalk(walkRoute, pos) {
+// Render a given walk route from the current position
+function renderWalk(walkRoute, pos) {
         updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
 
         var walkRouteCoordinates = walkRoute.nodes;
@@ -254,24 +258,6 @@ function initMap() {
     }
 }
 
-// Returns path length in km
-function calculatePathLength(listOfCoordinates) {
-    var measurablePath = listOfCoordinates.map(function(e) {
-        return [e.lat, e.lng];
-    })
-
-    var pathLength = measurePath(measurablePath);
-
-    /* If the distance between the starting point and the end point is more than 200m
-     * then we assume the walk is an "out and back" where we need to return along the
-     * same path to the starting point
-     */
-    if (getDistance(measurablePath[0], measurablePath[measurablePath.length - 1]) > 0.2) {
-        pathLength *= 2;
-    }
-
-    return pathLength;
-}
 /*
  * Updates UI Element Tracking Distance of Path 
  * Measured in KMs
