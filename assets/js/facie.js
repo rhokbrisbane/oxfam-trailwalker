@@ -1,6 +1,19 @@
+var fbConnected = false;
+
 $(document).ready(function() {
     $('.lets-do-it').on('click', function() {
-        fbShare(window.location.href);
+        if (!fbConnected) {            
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    FB.api('/me', function(response) {
+                        fbConnected = true;               
+                        fbShareDialog(window.location.href);
+                    });
+                }
+            });
+        } else {
+            fbShareDialog(window.location.href);
+        }
     });
 });
 
@@ -16,6 +29,12 @@ function fbInit() {
             xfbml      : true,
             version    : 'v2.8'
         });
+
+        FB.getLoginStatus(function(response) {
+            if (response.status === 'connected') {
+                fbConnected = true;
+            }
+        });
     };
 
     (function(d, s, id){
@@ -25,22 +44,6 @@ function fbInit() {
         js.src = "https://connect.facebook.net/en_AU/sdk.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-}
-
-function fbShare(permalinkParam) {
-    FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-            fbShareDialog(permalinkParam);
-        } else {
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    FB.api('/me', function(response) {                        
-                        fbShareDialog(permalinkParam);
-                    });
-                }
-            });
-        }
-    });
 }
 
 function fbShareDialog(permalinkParam) {
