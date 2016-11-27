@@ -139,6 +139,10 @@ body {
     background-color: #0c8848;
 }
 
+.other-buttons {
+    text-align: right;
+}
+
 *:focus {
     outline: 0;
 }
