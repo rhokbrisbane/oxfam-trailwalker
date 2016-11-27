@@ -11,6 +11,7 @@ var strokeWeight = 10;
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
  */
 var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
+var DEFAULT_TRAIL_NAME = "Yours to discover!"
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -174,27 +175,31 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
     getCurrentPosition(map, true, function(pos) {
-        setupRoutes(map, pos);
+      setupRoutes(map, pos);
     });
 
     function setupRoutes(map, pos) {
-        // TODO: here would be a good place to check for a static walk ID
+    // TODO: here would be a good place to check for a static walk ID
 
-        // fetch a random walk from OSM near us
-        getOsmNodes(
-            pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            function(data) {
-                var walkRoute = getRandomWalkFromOsmDataset(data);
+    // fetch a random walk from OSM near us
+    getOsmNodes(
+        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        function(data) {
+            var walkRoute = getRandomWalkFromOsmDataset(data);
 
-                renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
-            }
-        );
+            renderWalk(walkRoute, pos);
+        }
+    );
     }
 
-    function renderWalk(walkRouteCoordinates, pos) {
+    function renderWalk(walkRoute, pos) {
+        updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
+
+        var walkRouteCoordinates = walkRoute.nodes;
+
         updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
         var walkRoute = new google.maps.Polyline({
@@ -203,17 +208,17 @@ function initMap() {
             strokeColor: walkStroke,
             strokeOpacity: strokeOpacity,
             strokeWeight: strokeWeight
-        });
+    });
 
-        walkRoute.setMap(map);
+    walkRoute.setMap(map);
 
-        var walkRouteStartingPoint = walkRouteCoordinates[0];
+    var walkRouteStartingPoint = walkRouteCoordinates[0];
 
-        /* Deals with Getting Directions from Google API and Rendering the Polyline */
-        getDirections(
-            [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
-        );
-    }
+    /* Deals with Getting Directions from Google API and Rendering the Polyline */
+    getDirections(
+        [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
+    );
+  }
 }
 
 // Returns path length in km
@@ -244,6 +249,9 @@ function updatePathLengthView(lengthInKm) {
     $('#length').text(km + "km");
 }
 
+function updateTrailNameView(trailName) {
+    $('#trailName').text(trailName);
+}
 
 /* 
  * Loads the Directions into the Renderer which 
