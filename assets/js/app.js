@@ -3,7 +3,7 @@
  * Stlying Variables for Path Routes 
  */
 var walkStroke = '#50af47';
-var directionsStroke = '#e70052';
+var directionsStroke = '#0b9cda';
 var strokeOpacity = 0.5;
 var strokeWeight = 10;
 
@@ -174,46 +174,46 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
     getCurrentPosition(map, true, function(pos) {
-      setupRoutes(map, pos);
+        setupRoutes(map, pos);
     });
 
     function setupRoutes(map, pos) {
-    // TODO: here would be a good place to check for a static walk ID
+        // TODO: here would be a good place to check for a static walk ID
 
-    // fetch a random walk from OSM near us
-    getOsmNodes(
-        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        function(data) {
-            var walkRoute = getRandomWalkFromOsmDataset(data);
+        // fetch a random walk from OSM near us
+        getOsmNodes(
+            pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            function(data) {
+                var walkRoute = getRandomWalkFromOsmDataset(data);
 
-            renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
-        }
-    );
+                renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
+            }
+        );
     }
 
     function renderWalk(walkRouteCoordinates, pos) {
-    updatePathLengthView(calculatePathLength(walkRouteCoordinates));
+        updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
-    var walkRoute = new google.maps.Polyline({
-        path: walkRouteCoordinates,
-        geodesic: true,
-        strokeColor: walkStroke,
-        strokeOpacity: strokeOpacity,
-        strokeWeight: strokeWeight
-    });
+        var walkRoute = new google.maps.Polyline({
+            path: walkRouteCoordinates,
+            geodesic: true,
+            strokeColor: walkStroke,
+            strokeOpacity: strokeOpacity,
+            strokeWeight: strokeWeight
+        });
 
-    walkRoute.setMap(map);
+        walkRoute.setMap(map);
 
-    var walkRouteStartingPoint = walkRouteCoordinates[0];
-    
-    /* Deals with Getting Directions from Google API and Rendering the Polyline */
-    getDirections(
-        [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
-    );
-  }
+        var walkRouteStartingPoint = walkRouteCoordinates[0];
+
+        /* Deals with Getting Directions from Google API and Rendering the Polyline */
+        getDirections(
+            [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
+        );
+    }
 }
 
 // Returns path length in km
@@ -260,8 +260,8 @@ function setDirections(result) {
         }
     });
     // Render Customer Start and End Markers
-    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'https://cdn2.iconfinder.com/data/icons/web-interface-linear-black/2048/6590_-_Placeholder-128.png' });
-    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'https://cdn2.iconfinder.com/data/icons/web-interface-linear-black/2048/6590_-_Placeholder-128.png' });
+    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'assets/img/start_marker.svg' });
+    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'assets/img/end_marker.svg' });
 
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);

@@ -4,7 +4,7 @@ function getDirections(origin, destination) {
     var request = {
         origin: origin.toString(),
         destination: destination.toString(),
-        travelMode: 'WALKING',
+        travelMode: 'DRIVING',
     };
 
     // Directions Service used to render Result to Map
