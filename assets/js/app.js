@@ -29,6 +29,7 @@ var MapElement = null;
 var CurrentPosition = null;
 var walkRouteRenderer = null;
 var directionsRenderer = null;
+var startMarker = null;
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -186,6 +187,7 @@ function getMapOptions() {
 
 $(document).ready(function() {
     $('#too_short').on('click', function() {
+        console.log("running");
         CurrentTargetLength *= ROUTE_LENGTHENING_PERCENTAGE;
         setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
     });
@@ -242,6 +244,8 @@ function renderWalk(walkRoute, pos) {
     if (walkRouteRenderer) {
         // clear
         walkRouteRenderer.setMap(null);
+        startMarker.setMap(null);
+
     }
     walkRouteRenderer = new google.maps.Polyline({
         path: walkRouteCoordinates,
@@ -262,24 +266,14 @@ function renderWalk(walkRoute, pos) {
     );
 
     // Render Customer Start and End Markers
-    var start = new google.maps.Marker({
+    startMarker = new google.maps.Marker({
         position: new google.maps.LatLng(walkRouteStartingPoint.lat, walkRouteStartingPoint.lng),
-        map: map,
+        map: MapElement,
         icon: {
             url: 'assets/img/walk.svg',
             scaledSize: new google.maps.Size(30, 41.43),
         }
     });
-
-    // Finish Marker
-    // var end = new google.maps.Marker({
-    //     position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
-    //     map: map,
-    //     icon: {
-    //         url: 'assets/img/end_marker.svg',
-    //         scaledSize: new google.maps.Size(30, 45.8),
-    //     }
-    // });
 }
 
 /*
