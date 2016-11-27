@@ -23,7 +23,9 @@ body {
     z-index: 5;
 }
 
-.filter-search-logo, .filter-search-track-details, .filter-map-details {
+.filter-search-logo,
+.filter-search-track-details,
+.filter-map-details {
     margin-bottom: 10px;
 }
 
@@ -139,7 +141,6 @@ img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
 }
 
 @media screen and (max-width: 850px) {
-
     body {
         font-size: 0.8em;
     }
