@@ -17,9 +17,18 @@ var strokeWeight = 10;
 /*
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
  */
+var ROUTE_LENGTHENING_PERCENTAGE = 1.5;
 var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
 var DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */ ;
 var DEFAULT_TRAIL_NAME = "Yours to discover!";
+
+// TODO: Something better than this
+// Globals for page state
+var CurrentTargetLength = DEFAULT_ROUTE_TARGET_LENGTH;
+var MapElement = null;
+var CurrentPosition = null;
+var walkRouteRenderer = null;
+var directionsRenderer = null;
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -175,15 +184,28 @@ function getMapOptions() {
  *
  */
 
+$(document).ready(function() {
+    $('#too_short').on('click', function() {
+        CurrentTargetLength *= ROUTE_LENGTHENING_PERCENTAGE;
+        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
+    });
+
+    $('#too_long').on('click', function() {
+        CurrentTargetLength /= ROUTE_LENGTHENING_PERCENTAGE;
+        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
+    });
+
+});
 
 /* Creates the Google Map and sets Feature Flags and Options */
 function initMap() {
 
     // Instantiates Google Map Object  
-    map = new google.maps.Map(document.getElementById('map'), getMapOptions());
+    MapElement = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
-    getCurrentPosition(map, true, function(pos) {
-        setupRoutes(map, pos, DEFAULT_ROUTE_TARGET_LENGTH);
+    getCurrentPosition(MapElement, true, function(pos) {
+        CurrentPosition = pos;
+        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
     });
 }
 
@@ -217,8 +239,11 @@ function renderWalk(walkRoute, pos) {
     // Update the Difficulty UI element
     updateTrailDfficultyView(walkRoute.tags.sac_scale);
 
-
-    var walkRoute = new google.maps.Polyline({
+    if (walkRouteRenderer) {
+        // clear
+        walkRouteRenderer.setMap(null);
+    }
+    walkRouteRenderer = new google.maps.Polyline({
         path: walkRouteCoordinates,
         geodesic: true,
         strokeColor: walkStroke,
@@ -226,7 +251,7 @@ function renderWalk(walkRoute, pos) {
         strokeWeight: strokeWeight
     });
 
-    walkRoute.setMap(map);
+    walkRouteRenderer.setMap(MapElement);
 
     var walkRouteStartingPoint = walkRouteCoordinates[0];
     var walkRouteEndPoint = walkRouteCoordinates[walkRouteCoordinates.length - 1];
@@ -316,7 +341,11 @@ function setDirections(result) {
     // });
 
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
-    var directionsRenderer = new google.maps.DirectionsRenderer({
+    if (directionsRenderer) {
+        //clear 
+        directionsRenderer.setMap(null);
+    }
+    directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: true,
         polylineOptions: {
             strokeColor: directionsStroke,
@@ -326,6 +355,6 @@ function setDirections(result) {
         }
     });
 
-    directionsRenderer.setMap(map);
+    directionsRenderer.setMap(MapElement);
     directionsRenderer.setDirections(result);
 }
