@@ -20,7 +20,6 @@ $(document).ready(function() {
 });
 
 function fbShareDialog(uri) {
-    console.log(uri);
     FB.ui({
         app_id: fbAppId(),
         method: 'share',

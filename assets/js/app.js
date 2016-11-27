@@ -207,6 +207,7 @@ function setupRoutes(map, pos, targetRouteLength) {
 
 // Render a given walk route from the current position
 function renderWalk(walkRoute, pos) {
+    location.hash = walkRoute.id;
     updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
 
     var walkRouteCoordinates = walkRoute.nodes;
