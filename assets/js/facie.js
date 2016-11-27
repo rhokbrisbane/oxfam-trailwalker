@@ -5,10 +5,10 @@ $(document).ready(function() {
         if (!fbConnected) {            
             FB.login(function(response) {
                 if (response.authResponse) {
-                    FB.api('/me', function(response) {
+                    //FB.api('/me', function(response) {
                         fbConnected = true;               
                         fbShareDialog(window.location.href);
-                    });
+                    //});
                 }
             });
         } else {
@@ -27,7 +27,8 @@ function fbInit() {
         FB.init({
             appId      : fbAppId,
             xfbml      : true,
-            version    : 'v2.8'
+            version    : 'v2.8',
+            status     : true
         });
 
         FB.getLoginStatus(function(response) {
