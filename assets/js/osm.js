@@ -71,6 +71,17 @@ function addNodeInformation(data) {
     return data;
 }
 
+function getWalkFromOsmDatasetById(data, id) {
+  var walks = [];
+
+  for(var i = 0; i < data.elements.length; i++) {
+      if (data.elements[i].id == id) {
+        return data.elements[i];
+      }
+  }
+  return;
+}
+
 function getRandomWalkFromOsmDataset(data, targetLength) {
     if (data.elements.length < 1) {
         return;

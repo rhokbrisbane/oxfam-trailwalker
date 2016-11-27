@@ -205,12 +205,12 @@ function initMap() {
 
     getCurrentPosition(MapElement, true, function(pos) {
         CurrentPosition = pos;
-        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
+        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength, location.hash);
     });
 }
 
 // Fetch a random route and render it
-function setupRoutes(map, pos, targetRouteLength) {
+function setupRoutes(map, pos, targetRouteLength, hashVal) {
     // TODO: here would be a good place to check for a static walk ID
 
     // fetch a random walk from OSM near us
@@ -220,9 +220,13 @@ function setupRoutes(map, pos, targetRouteLength) {
         pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
         pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
         function(data) {
-            var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
-
-            renderWalk(walkRoute, pos);
+            if (hashVal) {
+                var walkRoute = getWalkFromOsmDatasetById(data, hashVal.split('#')[1]);
+                renderWalk(walkRoute, pos);
+            } else {
+                var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
+                renderWalk(walkRoute, pos);
+            }
         }
     );
 }
