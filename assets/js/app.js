@@ -211,10 +211,7 @@ function renderWalk(walkRouteCoordinates, pos) {
     getDirections(
         [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
     );
-
-    }, function() {
-        handleLocationError(true, map.getCenter());
-    });
+  }
 }
 
 // Returns path length in km
