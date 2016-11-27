@@ -73,10 +73,14 @@
     </div>
 
     <script>
+        var fbAppId = '206742363104102'; // dev
+        if (window.location.hostname === 'findmeawalk.com') {
+            fbAppId = '206735286438143'; // prod
+        }
+
         window.fbAsyncInit = function() {
             FB.init({
-            //appId      : '206735286438143', // prod
-            appId      : '206742363104102',  // debug
+            appId      : fbAppId,
             xfbml      : true,
             version    : 'v2.8'
             });
