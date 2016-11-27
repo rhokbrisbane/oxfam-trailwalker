@@ -7,6 +7,11 @@ var directionsStroke = '#e70052';
 var strokeOpacity = 0.5;
 var strokeWeight = 10;
 
+/*
+ * CONSTANTS FOR PATH/DISTANCE CALCULATION
+ */
+var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
+
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
  * Returns the Google Map Options 
@@ -22,127 +27,127 @@ function getMapOptions() {
         mapTypeControl: false,
         scaleControl: false,
         styles: [{
-            "elementType": "geometry",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#f5f5f5"
+                    "color": "#f5f5f5"
                 }]
-          },
-          {
-            "elementType": "labels.icon",
+            },
+            {
+                "elementType": "labels.icon",
                 "stylers": [{
-                "visibility": "off"
+                    "visibility": "off"
                 }]
-          },
-          {
-            "elementType": "labels.text.fill",
+            },
+            {
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#616161"
+                    "color": "#616161"
                 }]
-          },
-          {
-            "elementType": "labels.text.stroke",
+            },
+            {
+                "elementType": "labels.text.stroke",
                 "stylers": [{
-                "color": "#f5f5f5"
+                    "color": "#f5f5f5"
                 }]
-          },
-          {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#bdbdbd"
+                    "color": "#bdbdbd"
                 }]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#eeeeee"
+                    "color": "#eeeeee"
                 }]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#757575"
+                    "color": "#757575"
                 }]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#e5e5e5"
+                    "color": "#e5e5e5"
                 }]
-          },
-          {
-            "featureType": "poi.park",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-          },
-          {
-            "featureType": "road",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#ffffff"
+                    "color": "#ffffff"
                 }]
-          },
-          {
-            "featureType": "road.arterial",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#757575"
+                    "color": "#757575"
                 }]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#dadada"
+                    "color": "#dadada"
                 }]
-          },
-          {
-            "featureType": "road.highway",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#616161"
+                    "color": "#616161"
                 }]
-          },
-          {
-            "featureType": "road.local",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-          },
-          {
-            "featureType": "transit.line",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#e5e5e5"
+                    "color": "#e5e5e5"
                 }]
-          },
-          {
-            "featureType": "transit.station",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#eeeeee"
+                    "color": "#eeeeee"
                 }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "geometry",
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
                 "stylers": [{
-                "color": "#c9c9c9"
+                    "color": "#c9c9c9"
                 }]
-          },
-          {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
                 "stylers": [{
-                "color": "#9e9e9e"
+                    "color": "#9e9e9e"
                 }]
-              }
+            }
         ],
         zoomControl: true,
         zoomControlOptions: {
@@ -168,66 +173,44 @@ function initMap() {
     // Instantiates Google Map Object  
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
-    /* Get Current Geoloaction */
-    navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
+    getCurrentPosition(map, true, function(pos) {
+      setupRoutes(map, pos);
+    });
 
-        map.panTo(pos);
+function setupRoutes(map, pos) {
+    // TODO: here would be a good place to check for a static walk ID
 
-        /* Create You are here Marker Point */
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(pos.lat, pos.lng),
-            map: map
-        });
+    // fetch a random walk from OSM near us
+    getOsmNodes(
+        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        function(data) {
+            var walkRoute = getRandomWalkFromOsmDataset(data);
 
+            renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
+        }
+    );
+}
 
-        // @TODO Make this Dynamic
-        var walkRouteCoordinates = [
-            { lat: -27.4650419, lng: 152.9268182 },
-            { lat: -27.4654989, lng: 152.9282448 },
-            { lat: -27.4654489, lng: 152.9279491 },
-            { lat: -27.4654489, lng: 152.9277872 }
-        ];
+function renderWalk(walkRouteCoordinates, pos) {
+    updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
-        updatePathLengthView(calculatePathLength(walkRouteCoordinates));
+    var walkRoute = new google.maps.Polyline({
+        path: walkRouteCoordinates,
+        geodesic: true,
+        strokeColor: walkStroke,
+        strokeOpacity: strokeOpacity,
+        strokeWeight: strokeWeight
+    });
 
-        var walkRoute = new google.maps.Polyline({
-            path: walkRouteCoordinates,
-            geodesic: true,
-            strokeColor: walkStroke,
-            strokeOpacity: strokeOpacity,
-            strokeWeight: strokeWeight
-        });
+    walkRoute.setMap(map);
 
-        walkRoute.setMap(map);
-
-        // console.log(pos.lat);
-        // console.log(pos.lng);
-        // console.log(map.getBounds().getSouthWest().lat())
-        // console.log(map.getBounds().getSouthWest().lng())
-        // console.log(map.getBounds().getNorthEast().lat())
-        // console.log(map.getBounds().getNorthEast().lng())
-
-        // getNodes(
-        //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
-        //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
-        //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
-        //     pos.lng + .25// map.getBounds().getNorthEast().lng()
-        // );
-        getNodes(
-            map.getBounds().getSouthWest().lat(),
-            map.getBounds().getSouthWest().lng(),
-            map.getBounds().getNorthEast().lat(),
-            map.getBounds().getNorthEast().lng()
-        );
-
-        /* Deals with Getting Directions from Google API and Rendering the Polyline */
-        getDirections(
-            [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
-        );
+    /* Deals with Getting Directions from Google API and Rendering the Polyline */
+    getDirections(
+        [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
+    );
 
     }, function() {
         handleLocationError(true, map.getCenter());

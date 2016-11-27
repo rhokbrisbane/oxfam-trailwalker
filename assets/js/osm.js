@@ -1,10 +1,48 @@
-function getNodes(slat, slng, nlat, nlng) {
-    var bbox = slat.toString() + ',' + slng.toString() + ',' + nlat.toString() + ',' + nlng.toString();
-    var url = 'https://overpass-api.de/api/interpreter?data=[out:json];way[highway=path][foot=yes][surface=ground](' + bbox + ');out body;>;out skel qt;';
+/*
+ * Happy cache
+ * TODO: localstorage?
+ */
+var osmDataCache = {};
 
-    $.get(url, function( data ) {
-        console.log(data);
+function getOsmNodes(slat, slng, nlat, nlng, callback) {
+  if (osmDataCache.osm3s) {
+    callback(osmDataCache);
+  }
+
+  var bbox = slat.toString() + ',' + slng.toString() + ',' + nlat.toString() + ',' + nlng.toString();
+  var url = 'https://overpass-api.de/api/interpreter?data=[out:json];way[highway=path][foot=yes][surface=ground](' + bbox + ');out body;>;out skel qt;';
+
+  $.get(url, callback);
+}
+
+function getRandomWalkFromOsmDataset(data) {
+  // Filter down only to our walks
+  var walks = data.elements.filter(
+    function(e) { 
+      if (e.type === 'way') return e; 
     });
+  
+  // Select a random one
+  var chosenWalk = walks[Math.floor(Math.random() * walks.length)];
+
+  // Find all the nodes for our random walk
+  var nodesWithGeoData = chosenWalk.nodes.map(function(wayNode) {
+    var osmNode = data.elements.filter(function(node) {
+      return node.type === 'node' 
+              && node.id === wayNode;
+    })[0];
+
+    return {lat: osmNode.lat, lng: osmNode.lon};
+  });
+
+  // Throw them all together
+  chosenWalk.nodes = nodesWithGeoData;
+
+  return chosenWalk
+}
+
+function osmWayToWalkRouteCoordinates(wayData) {
+  return wayData.nodes;
 }
 
 // distance.js from https://github.com/Maciek416/gps-distance/
