@@ -21,7 +21,7 @@ function getCurrentPosition(map, newMarker, callback) {
         map.panTo(pos);
 
         if (callback) {
-            callback();
+            callback(pos);
         }
     }, function() {
         handleLocationError(true, map.getCenter());

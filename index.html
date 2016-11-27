@@ -3,8 +3,20 @@
 
 <head>
     <title>Find Me a Walk</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://findmeawalk.com" />
+    <meta property="og:site_name" content="Find Me a Walk"/>
+    <meta property="og:title" content="Come join me?" />
+    <meta property="og:description" content="Walk like a tourist in your backyard." />
+    <meta property="og:image" content="https://scontent.xx.fbcdn.net/v/t1.0-9/15241161_1610182139278769_2655726237794556051_n.png?oh=36a15ab75e8f825707789ce952771ec7&oe=58CC2F5B" />
+	
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
     <link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/fonts.css" />
     <script>
@@ -32,12 +44,10 @@
 
         <div class="filter-search-box">
             <div class="filter-search-logo">
-                <h1>Find Me A Walk</h1>
+                <h1>Find Me A Walk<img src="assets/img/icon.png"></h1>
             </div>
             <div class="filter-search-track-details">
-                <span class="filter-search-name">Track Name</span>
-                <span id="length" class="filter-search-length">10km</span>
-                <span class="filter-search-difficulty">Hard</span>
+                <span class="filter-search-name">Track Name</span><span id="length" class="filter-search-length">Distance</span><span class="filter-search-difficulty">Hard</span>
             </div>
             <div class="filter-map-details">
             </div>
@@ -48,11 +58,14 @@
             <a href="https://www.instagram.com/findmeawalk/" target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram" aria-hidden="true"></i></a>
             <a href="https://twitter.com/FindMeAWalk" target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter" aria-hidden="true"></i></a>
             <a href="https://github.com/rhokbrisbane/oxfam-trailwalker/" target="_blank" rel="noopener noreferrer" title="Help improve this app!"><i class="fa fa-github" aria-hidden="true"></i></a>
-            <span>Powered by Trailblazerz</span>
+            <span>Powered by Oxfam Trailerwalker</span>
         </div>
 
         <div class="filter-map-buttons">
-            <button>Too Short</button><button>Too Long</button>
+            <button class="submit">Let's do it!</button>
+            <div class="other-buttons">
+            <button class="short">Too Short</button><button class="long">Too Long</button>
+            </div>
         </div>
 
         <div id="map"></div>
