@@ -27,6 +27,11 @@ body {
     margin-bottom: 10px;
 }
 
+.filter-search-logo img {
+    width: 10%;
+    padding: 0 0 0 20px;
+}
+
 .filter-search-track-details {
     margin-top: 10px;
 }
@@ -59,8 +64,9 @@ body {
 
 .filter-social-icons {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding: 10px 15px;
     z-index: 5;
     background-color: #fff;
@@ -79,9 +85,14 @@ body {
     margin-right: 0;
 }
 
+.filter-social-icons {
+    color: #50af47;
+    font-weight: bold;
+}
+
 .filter-map-buttons {
     position: absolute;
-    bottom: 0;
+    bottom: 47px;
     right: 0;
     padding: 10px;
     z-index: 5;
@@ -89,7 +100,7 @@ body {
 
 .filter-map-buttons button {
     display: inline-block;
-    padding: 0 15px;
+    padding: 0 10px;
     margin-right: 10px;
     border: none;
     color: #0c8848;
@@ -102,17 +113,29 @@ body {
     transition: all 200ms ease-in-out;
 }
 
-.filter-map-buttons button:hover {
-    color: #fff;
-    background-color: #0c8848;
-}
-
 .filter-map-buttons button:last-child {
     margin-right: 0;
 }
 
+.submit {
+    float: right;
+    display: block !important;
+    margin: 0 0 10px 0 !important;
+    color: #0b9cda !important;
+    font-size: 2em !important;
+}
+
 *:focus {
     outline: 0;
+}
+
+#map-report div.gmnoprint,
+#map-report div.gmnoscreen {
+    display: none;      
+}
+
+img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
+    display: none; 
 }
 
 @media screen and (max-width: 850px) {
@@ -121,6 +144,20 @@ body {
         font-size: 0.8em;
     }
 
+    .filter-map-buttons {
+        bottom: 38px;
+    }
+
 }
 
-#0b9cda
+@media screen and (max-width: 450px) {
+
+    body {
+        font-size: 0.6em;
+    }
+
+    .filter-map-buttons {
+        bottom: 32px;
+    }
+
+}
