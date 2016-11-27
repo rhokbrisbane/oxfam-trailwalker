@@ -177,7 +177,7 @@ function initMap() {
       setupRoutes(map, pos);
     });
 
-function setupRoutes(map, pos) {
+    function setupRoutes(map, pos) {
     // TODO: here would be a good place to check for a static walk ID
 
     // fetch a random walk from OSM near us
@@ -192,9 +192,9 @@ function setupRoutes(map, pos) {
             renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
         }
     );
-}
+    }
 
-function renderWalk(walkRouteCoordinates, pos) {
+    function renderWalk(walkRouteCoordinates, pos) {
     updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
     var walkRoute = new google.maps.Polyline({
@@ -207,9 +207,11 @@ function renderWalk(walkRouteCoordinates, pos) {
 
     walkRoute.setMap(map);
 
+    var walkRouteStartingPoint = walkRouteCoordinates[0];
+    
     /* Deals with Getting Directions from Google API and Rendering the Polyline */
     getDirections(
-        [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
+        [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
     );
   }
 }
@@ -225,8 +227,8 @@ function calculatePathLength(listOfCoordinates) {
     /* If the distance between the starting point and the end point is more than 200m
      * then we assume the walk is an "out and back" where we need to return along the
      * same path to the starting point
-     */ 
-    if (getDistance(measurablePath[0], measurablePath[measurablePath.length-1]) > 0.2) {
+     */
+    if (getDistance(measurablePath[0], measurablePath[measurablePath.length - 1]) > 0.2) {
         pathLength *= 2;
     }
 
@@ -250,13 +252,17 @@ function updatePathLengthView(lengthInKm) {
 function setDirections(result) {
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
+        suppressMarkers: true,
         polylineOptions: {
             strokeColor: directionsStroke,
             strokeOpacity: strokeOpacity,
             strokeWeight: strokeWeight,
         }
     });
-    console.log(directionsRenderer);
+    // Render Customer Start and End Markers
+    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'https://cdn2.iconfinder.com/data/icons/web-interface-linear-black/2048/6590_-_Placeholder-128.png' });
+    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'https://cdn2.iconfinder.com/data/icons/web-interface-linear-black/2048/6590_-_Placeholder-128.png' });
+
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);
 }
