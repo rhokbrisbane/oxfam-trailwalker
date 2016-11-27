@@ -125,6 +125,7 @@ body {
     margin: 0 0 10px 0 !important;
     color: #0b9cda !important;
     font-size: 2em !important;
+    cursor: pointer;
 }
 
 *:focus {

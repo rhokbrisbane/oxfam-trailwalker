@@ -1,3 +1,9 @@
+$(document).ready(function() {
+    $('.lets-do-it').on('click', function() {
+        fbShare(window.location.href);
+    });
+});
+
 function fbInit() {
     var fbAppId = '206742363104102'; // dev
     if (window.location.hostname === 'findmeawalk.com') {
