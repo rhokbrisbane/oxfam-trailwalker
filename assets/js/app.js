@@ -258,15 +258,18 @@ function updatePathLengthView(lengthInKm) {
 function setDirections(result) {
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
-        /*markerOptions: {
-            icon: 'https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150',
-        },*/
+        // Hide Default Markers 
+        suppressMarkers: true,
         polylineOptions: {
             strokeColor: directionsStroke,
             strokeOpacity: strokeOpacity,
             strokeWeight: strokeWeight,
         }
     });
+    // Render Customer Start and End Markers
+    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150' });
+    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'https://placeholdit.imgix.net/~text?txtsize=28&bg=0099ff&txtclr=ffffff&txt=300%C3%97300&w=300&h=300&fm=png' });
+
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);
 }
