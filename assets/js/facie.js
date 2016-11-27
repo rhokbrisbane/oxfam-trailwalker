@@ -19,6 +19,17 @@ $(document).ready(function() {
     });
 });
 
+function fbShareDialog(uri) {
+    console.log(uri);
+    FB.ui({
+        app_id: fbAppId(),
+        method: 'share',
+        href: uri,
+        display: 'popup',
+        redirect_uri: uri
+    }, function(response){});
+}
+
 function fbAppId() {
     var id = '206742363104102'; // dev
     if (window.location.hostname === 'findmeawalk.com') {
@@ -50,14 +61,4 @@ function fbInit() {
         js.src = "https://connect.facebook.net/en_AU/sdk.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-}
-
-function fbShareDialog(permalinkParam) {
-    FB.ui({
-        app_id: fbAppId(),
-        method: 'share',
-        href: 'https://findmeawalk.com#' + permalinkParam,
-        display: 'popup',
-        redirect_uri: 'https://findmeawalk.com#' + permalinkParam
-    }, function(response){});
 }
