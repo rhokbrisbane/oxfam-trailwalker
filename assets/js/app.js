@@ -1,4 +1,9 @@
 /*
+ * Go facebook
+ */
+fbInit();
+
+/*
  * SETTING STLYING VARIABLES FOR PATH CONSTRUCTION
  * Stlying Variables for Path Routes 
  */
