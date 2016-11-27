@@ -209,6 +209,10 @@ function initMap() {
 
         updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
+        // Update the Difficulty UI element
+        updateTrailDfficultyView(walkRoute.tags.sac_scale);
+
+
         var walkRoute = new google.maps.Polyline({
             path: walkRouteCoordinates,
             geodesic: true,
@@ -234,7 +238,7 @@ function initMap() {
             map: map,
             icon: {
                 url: 'assets/img/walk.svg',
-                scaledSize: new google.maps.Size(30, 30),
+                scaledSize: new google.maps.Size(30, 41.43),
             }
         });
 
@@ -281,6 +285,11 @@ function updatePathLengthView(lengthInKm) {
 function updateTrailNameView(trailName) {
     $('#trailName').text(trailName);
 }
+
+function updateTrailDfficultyView(trialDifficulty) {
+    $('#trailDifficutly').text(trialDifficulty);
+}
+
 
 /* 
  * Loads the Directions into the Renderer which 

@@ -16,7 +16,7 @@ function getCurrentPosition(map, newMarker, callback) {
                 icon: {
                     url: 'assets/img/drive.svg',
                     // Magic numbers
-                    scaledSize: new google.maps.Size(30, 30),
+                    scaledSize: new google.maps.Size(30, 41.43),
                 }
             });
         } else {
