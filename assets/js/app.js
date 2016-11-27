@@ -271,8 +271,23 @@ function updateTrailNameView(trailName) {
 }
 
 function updateTrailDfficultyView(trialDifficulty) {
-    console.log(trialDifficulty);
-    $('#trailDifficutly').text(trialDifficulty);
+    if (trialDifficulty !== undefined) {
+        switch (trialDifficulty) {
+            case 'hiking':
+            case 'mountain_hiking':
+                $('#trailDifficutly').text('easy');
+                break;
+            case 'demanding_mountain_hiking':
+            case 'alpine_hiking':
+                $('#trailDifficutly').text('medium');
+                break;
+            default:
+                $('#trailDifficutly').text('extreme');
+        }
+
+    } else {
+        $('#trailDifficutly').hide();
+    }
 }
 
 
