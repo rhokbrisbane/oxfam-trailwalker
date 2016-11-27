@@ -162,3 +162,16 @@ img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
     }
 
 }
+
+@media screen and (max-width: 350px) {
+
+    .filter-map-buttons {
+        bottom: 4px;
+    }
+
+    .filter-social-icons span {
+        display: block;
+        padding: 10px 0 0 0;
+    }
+
+}
