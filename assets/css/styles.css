@@ -84,6 +84,10 @@ body {
     margin-right: 10px;
 }
 
+.filter-links {
+    display: inline-block;
+}
+
 .filter-social-icons a:last-child {
     margin-right: 0;
 }
@@ -177,25 +181,17 @@ img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
 
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 470px) {
 
     body {
         font-size: 0.6em;
     }
 
     .filter-map-buttons {
-        bottom: 32px;
-    }
-
-}
-
-@media screen and (max-width: 350px) {
-
-    .filter-map-buttons {
         bottom: 54px;
     }
 
-    .filter-social-icons span {
+    .filter-links {
         display: block;
         padding: 10px 0 0 0;
     }
