@@ -2,30 +2,34 @@ var fbConnected = false;
 
 $(document).ready(function() {
     $('.lets-do-it').on('click', function() {
-        if (!fbConnected) {            
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    //FB.api('/me', function(response) {
-                        fbConnected = true;               
-                        fbShareDialog(window.location.href);
-                    //});
-                }
-            });
-        } else {
-            fbShareDialog(window.location.href);
-        }
+        fbShareDialog(window.location.href);
+        // if (!fbConnected) {            
+        //     FB.login(function(response) {
+        //         if (response.authResponse) {
+        //             //FB.api('/me', function(response) {
+        //                 fbConnected = true;               
+        //                 fbShareDialog(window.location.href);
+        //             //});
+        //         }
+        //     });
+        // } else {
+        //     fbShareDialog(window.location.href);
+        // }
     });
 });
 
-function fbInit() {
-    var fbAppId = '206742363104102'; // dev
+function fbAppId() {
+    var id = '206742363104102'; // dev
     if (window.location.hostname === 'findmeawalk.com') {
-        fbAppId = '206735286438143'; // prod
+        id = '206735286438143'; // prod
     }
+    return id;
+}
 
+function fbInit() {
     window.fbAsyncInit = function() {
         FB.init({
-            appId      : fbAppId,
+            appId      : fbAppId(),
             xfbml      : true,
             version    : 'v2.8',
             status     : true
@@ -49,7 +53,10 @@ function fbInit() {
 
 function fbShareDialog(permalinkParam) {
     FB.ui({
+        app_id: fbAppId(),
         method: 'share',
         href: 'https://findmeawalk.com#' + permalinkParam,
+        display: 'popup',
+        redirect_uri: 'https://findmeawalk.com#' + permalinkParam
     }, function(response){});
 }
