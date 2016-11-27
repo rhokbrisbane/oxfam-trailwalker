@@ -255,7 +255,6 @@ function renderWalk(walkRoute, pos) {
         //         scaledSize: new google.maps.Size(30, 45.8),
         //     }
         // });
-    }
 }
 
 /*
