@@ -12,7 +12,6 @@ function getDirections(origin, destination) {
 
     directionsService.route(request, function(result, status) {
         if (status == 'OK') {
-            console.log(result);
             setDirections(result);
         }
     });

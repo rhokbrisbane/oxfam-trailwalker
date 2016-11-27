@@ -18,7 +18,7 @@ var strokeWeight = 10;
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
  */
 var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
-var DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
+var DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */ ;
 var DEFAULT_TRAIL_NAME = "Yours to discover!";
 
 /* 
@@ -189,72 +189,71 @@ function initMap() {
 
 // Fetch a random route and render it
 function setupRoutes(map, pos, targetRouteLength) {
-        // TODO: here would be a good place to check for a static walk ID
+    // TODO: here would be a good place to check for a static walk ID
 
-        // fetch a random walk from OSM near us
-        getOsmNodes(
-            pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-            function(data) {
-                var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
+    // fetch a random walk from OSM near us
+    getOsmNodes(
+        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        function(data) {
+            var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
 
-                renderWalk(walkRoute, pos);
-            }
-        );
+            renderWalk(walkRoute, pos);
+        }
+    );
 }
 
 // Render a given walk route from the current position
 function renderWalk(walkRoute, pos) {
-        updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
+    updateTrailNameView(walkRoute.tags.name || DEFAULT_TRAIL_NAME);
 
-        var walkRouteCoordinates = walkRoute.nodes;
+    var walkRouteCoordinates = walkRoute.nodes;
 
-        updatePathLengthView(calculatePathLength(walkRouteCoordinates));
+    updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
-        // Update the Difficulty UI element
-        updateTrailDfficultyView(walkRoute.tags.sac_scale);
+    // Update the Difficulty UI element
+    updateTrailDfficultyView(walkRoute.tags.sac_scale);
 
 
-        var walkRoute = new google.maps.Polyline({
-            path: walkRouteCoordinates,
-            geodesic: true,
-            strokeColor: walkStroke,
-            strokeOpacity: strokeOpacity,
-            strokeWeight: strokeWeight
-        });
+    var walkRoute = new google.maps.Polyline({
+        path: walkRouteCoordinates,
+        geodesic: true,
+        strokeColor: walkStroke,
+        strokeOpacity: strokeOpacity,
+        strokeWeight: strokeWeight
+    });
 
-        walkRoute.setMap(map);
+    walkRoute.setMap(map);
 
-        var walkRouteStartingPoint = walkRouteCoordinates[0];
-        var walkRouteEndPoint = walkRouteCoordinates[walkRouteCoordinates.length - 1];
-        console.log(walkRouteEndPoint);
+    var walkRouteStartingPoint = walkRouteCoordinates[0];
+    var walkRouteEndPoint = walkRouteCoordinates[walkRouteCoordinates.length - 1];
 
-        /* Deals with Getting Directions from Google API and Rendering the Polyline */
-        getDirections(
-            [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
-        );
+    /* Deals with Getting Directions from Google API and Rendering the Polyline */
+    getDirections(
+        [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
+    );
 
-        // Render Customer Start and End Markers
-        var start = new google.maps.Marker({
-            position: new google.maps.LatLng(walkRouteStartingPoint.lat, walkRouteStartingPoint.lng),
-            map: map,
-            icon: {
-                url: 'assets/img/walk.svg',
-                scaledSize: new google.maps.Size(30, 41.43),
-            }
-        });
+    // Render Customer Start and End Markers
+    var start = new google.maps.Marker({
+        position: new google.maps.LatLng(walkRouteStartingPoint.lat, walkRouteStartingPoint.lng),
+        map: map,
+        icon: {
+            url: 'assets/img/walk.svg',
+            scaledSize: new google.maps.Size(30, 41.43),
+        }
+    });
 
-        // Finish Marker
-        // var end = new google.maps.Marker({
-        //     position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
-        //     map: map,
-        //     icon: {
-        //         url: 'assets/img/end_marker.svg',
-        //         scaledSize: new google.maps.Size(30, 45.8),
-        //     }
-        // });
+    // Finish Marker
+    // var end = new google.maps.Marker({
+    //     position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
+    //     map: map,
+    //     icon: {
+    //         url: 'assets/img/end_marker.svg',
+    //         scaledSize: new google.maps.Size(30, 45.8),
+    //     }
+    // });
 }
 
 /*
@@ -272,6 +271,7 @@ function updateTrailNameView(trailName) {
 }
 
 function updateTrailDfficultyView(trialDifficulty) {
+    console.log(trialDifficulty);
     $('#trailDifficutly').text(trialDifficulty);
 }
 
