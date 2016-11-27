@@ -3,9 +3,14 @@
  * Stlying Variables for Path Routes 
  */
 var walkStroke = '#50af47';
-var directionsStroke = '#0b9cda';
+var directionsStroke = '#e70052';
 var strokeOpacity = 0.5;
 var strokeWeight = 10;
+
+/*
+ * CONSTANTS FOR PATH/DISTANCE CALCULATION
+ */
+var KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR = 0.25;
 
 /* 
  * SETTING CONSTRUCTION VARIABLES FOR GOOGLE MAP
@@ -161,29 +166,35 @@ function getMapOptions() {
  *
  */
 
-var map;
-var userAllowedTracking = false;
-var myMarker;
 
 /* Creates the Google Map and sets Feature Flags and Options */
 function initMap() {
+
     // Instantiates Google Map Object  
     map = new google.maps.Map(document.getElementById('map'), getMapOptions());
 
-    getCurrentPosition(map, true, function() {
-        setupRoutes(map);
+    getCurrentPosition(map, true, function(pos) {
+      setupRoutes(map, pos);
     });
+
+function setupRoutes(map, pos) {
+    // TODO: here would be a good place to check for a static walk ID
+
+    // fetch a random walk from OSM near us
+    getOsmNodes(
+        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+        function(data) {
+            var walkRoute = getRandomWalkFromOsmDataset(data);
+
+            renderWalk(osmWayToWalkRouteCoordinates(walkRoute), pos);
+        }
+    );
 }
 
-function setupRoutes(map) {
-    // @TODO Make this Dynamic
-    var walkRouteCoordinates = [
-        { lat: -27.4650419, lng: 152.9268182 },
-        { lat: -27.4654989, lng: 152.9282448 },
-        { lat: -27.4654489, lng: 152.9279491 },
-        { lat: -27.4654489, lng: 152.9277872 }
-    ];
-
+function renderWalk(walkRouteCoordinates, pos) {
     updatePathLengthView(calculatePathLength(walkRouteCoordinates));
 
     var walkRoute = new google.maps.Polyline({
@@ -196,30 +207,14 @@ function setupRoutes(map) {
 
     walkRoute.setMap(map);
 
-    // console.log(pos.lat);
-    // console.log(pos.lng);
-    // console.log(map.getBounds().getSouthWest().lat())
-    // console.log(map.getBounds().getSouthWest().lng())
-    // console.log(map.getBounds().getNorthEast().lat())
-    // console.log(map.getBounds().getNorthEast().lng())
-
-    // getNodes(
-    //     pos.lat + .25,// map.getBounds().getSouthWest().lat(),
-    //     pos.lng - .25,// map.getBounds().getSouthWest().lng(),
-    //     pos.lat - .25,// map.getBounds().getNorthEast().lat(),
-    //     pos.lng + .25// map.getBounds().getNorthEast().lng()
-    // );
-    getNodes(
-        map.getBounds().getSouthWest().lat(),
-        map.getBounds().getSouthWest().lng(),
-        map.getBounds().getNorthEast().lat(),
-        map.getBounds().getNorthEast().lng()
-    );
-
     /* Deals with Getting Directions from Google API and Rendering the Polyline */
     getDirections(
         [-27.4654489, 152.9277872], [-27.4650419, 152.9268182]
     );
+
+    }, function() {
+        handleLocationError(true, map.getCenter());
+    });
 }
 
 // Returns path length in km
@@ -233,8 +228,8 @@ function calculatePathLength(listOfCoordinates) {
     /* If the distance between the starting point and the end point is more than 200m
      * then we assume the walk is an "out and back" where we need to return along the
      * same path to the starting point
-     */
-    if (getDistance(measurablePath[0], measurablePath[measurablePath.length - 1]) > 0.2) {
+     */ 
+    if (getDistance(measurablePath[0], measurablePath[measurablePath.length-1]) > 0.2) {
         pathLength *= 2;
     }
 
@@ -258,26 +253,13 @@ function updatePathLengthView(lengthInKm) {
 function setDirections(result) {
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
-        // Hide Default Markers 
-        suppressMarkers: true,
         polylineOptions: {
             strokeColor: directionsStroke,
             strokeOpacity: strokeOpacity,
             strokeWeight: strokeWeight,
         }
     });
-    // Render Customer Start and End Markers
-    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'https://placeholdit.imgix.net/~text?txtsize=33&txt=350%C3%97150&w=350&h=150' });
-    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'https://placeholdit.imgix.net/~text?txtsize=28&bg=0099ff&txtclr=ffffff&txt=300%C3%97300&w=300&h=300&fm=png' });
-
+    console.log(directionsRenderer);
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);
 }
-
-var timerId = setInterval(function() {
-    if (!userAllowedTracking) {
-        return false;
-    }
-
-    getCurrentPosition(map, false, null);
-}, 5000);
