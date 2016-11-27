@@ -81,6 +81,7 @@ body {
 }
 
 .fa {
+    color: #0c8848 !important;
     margin-right: 10px;
 }
 
@@ -92,7 +93,7 @@ body {
     margin-right: 0;
 }
 
-.filter-social-icons {
+.filter-social-icons a {
     color: #50af47;
     font-weight: bold;
 }
@@ -118,6 +119,7 @@ body {
     -moz-transition: all 200ms ease-in-out;
     -o-transition: all 200ms ease-in-out;
     transition: all 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .filter-map-buttons button:last-child {
