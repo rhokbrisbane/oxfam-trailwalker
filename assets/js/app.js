@@ -218,11 +218,32 @@ function initMap() {
         walkRoute.setMap(map);
 
         var walkRouteStartingPoint = walkRouteCoordinates[0];
+        var walkRouteEndPoint = walkRouteCoordinates[walkRouteCoordinates.length - 1];
+        console.log(walkRouteEndPoint);
 
         /* Deals with Getting Directions from Google API and Rendering the Polyline */
         getDirections(
             [pos.lat, pos.lng], [walkRouteStartingPoint.lat, walkRouteStartingPoint.lng]
         );
+
+        // Render Customer Start and End Markers
+        var start = new google.maps.Marker({
+            position: new google.maps.LatLng(walkRouteStartingPoint.lat, walkRouteStartingPoint.lng),
+            map: map,
+            icon: {
+                url: 'assets/img/start_marker.svg',
+                scaledSize: new google.maps.Size(30, 45.8),
+            }
+        });
+
+        var end = new google.maps.Marker({
+            position: new google.maps.LatLng(walkRouteEndPoint.lat, walkRouteEndPoint.lng),
+            map: map,
+            icon: {
+                url: 'assets/img/end_marker.svg',
+                scaledSize: new google.maps.Size(30, 45.8),
+            }
+        });
     }
 }
 
@@ -263,6 +284,7 @@ function updateTrailNameView(trailName) {
  * outputs them onto the Map
  */
 function setDirections(result) {
+    console.log(result);
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: true,
@@ -272,9 +294,6 @@ function setDirections(result) {
             strokeWeight: strokeWeight,
         }
     });
-    // Render Customer Start and End Markers
-    var start = new google.maps.Marker({ position: new google.maps.LatLng(-27.4654489, 152.9277872), map: map, icon: 'assets/img/start_marker.svg' });
-    var end = new google.maps.Marker({ position: new google.maps.LatLng(-27.4650419, 152.9268182), map: map, icon: 'assets/img/end_marker.svg' });
 
     directionsRenderer.setMap(map);
     directionsRenderer.setDirections(result);

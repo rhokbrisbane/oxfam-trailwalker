@@ -12,7 +12,12 @@ function getCurrentPosition(map, newMarker, callback) {
         if (newMarker) {
             myMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(pos.lat, pos.lng),
-                map: map
+                map: map,
+                icon: {
+                    url: 'assets/img/location_marker.svg',
+                    // Magic numbers
+                    scaledSize: new google.maps.Size(30, 45.8),
+                }
             });
         } else {
             myMarker.setPosition(new google.maps.LatLng(pos.lat, pos.lng));
