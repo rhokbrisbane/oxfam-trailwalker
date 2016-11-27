@@ -1,6 +1,7 @@
 var fbConnected = false;
 
 $(document).ready(function() {
+    $("#loading").fadeOut("slow");
     $('.lets-do-it').on('click', function() {
         fbShareDialog(window.location.href);
         // if (!fbConnected) {            

@@ -106,7 +106,7 @@ body {
     padding: 0 10px;
     margin-right: 10px;
     border: none;
-    color: #0c8848;
+    color: #50af47;
     background-color: #fff;
     font-family: 'Oxfam-Global-Headline', 'Arial', sans-serif;
     font-size: 1em;
@@ -136,7 +136,7 @@ body {
 
 .length:hover {
     color: #fff;
-    background-color: #0c8848;
+    background-color: #50af47;
 }
 
 .other-buttons {
@@ -150,6 +150,14 @@ body {
 #map-report div.gmnoprint,
 #map-report div.gmnoscreen {
     display: none;      
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #50af47;
 }
 
 img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
