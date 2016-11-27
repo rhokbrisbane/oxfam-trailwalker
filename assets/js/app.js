@@ -9,8 +9,10 @@ fbInit();
  */
 var walkStroke = '#50af47';
 var directionsStroke = '#e70052';
+var directionStrokeWeight = 5;
 var strokeOpacity = 0.5;
 var strokeWeight = 10;
+
 
 /*
  * CONSTANTS FOR PATH/DISTANCE CALCULATION
@@ -285,14 +287,32 @@ function updateTrailNameView(trailName) {
  * outputs them onto the Map
  */
 function setDirections(result) {
-    console.log(result);
+    // For Dashed Pink Line
+    // var lineSymbol = {
+    //     path: google.maps.SymbolPath.CIRCLE,
+    //     fillOpacity: 1,
+    //     scale: 3
+    // };
+
+    // var polylineDotted = new google.maps.Polyline({
+    //     strokeColor: '#0eb7f6',
+    //     strokeOpacity: 0,
+    //     fillOpacity: 0,
+    //     icons: [{
+    //         icon: lineSymbol,
+    //         offset: '0',
+    //         repeat: '10px'
+    //     }],
+    // });
+
     // To Supress Markers add { suppressMarkers:true } to the DirectionsRenderer Constructor
     var directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: true,
         polylineOptions: {
             strokeColor: directionsStroke,
             strokeOpacity: strokeOpacity,
-            strokeWeight: strokeWeight,
+            strokeWeight: directionStrokeWeight,
+            // icon: lineSymbol
         }
     });
 
