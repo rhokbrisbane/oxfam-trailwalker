@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import Map from './components/Map';
 import headerIcon from './styles/images/icon.png';
 import './styles/app.css';
 import './styles/fonts.css';
@@ -41,7 +42,7 @@ class App extends Component {
                 </div>
             </div>
 
-            <div id="map"></div>
+            <Map />
 
         </div>
       </div>
