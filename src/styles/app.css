@@ -149,16 +149,6 @@
     display: none;      
 }
 
-#loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #50af47;
-    text-align: center;
-    width: 100%;
-}
-
 img[src="http://maps.gstatic.com/mapfiles/google_white.png"] {
     display: none; 
 }
