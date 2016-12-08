@@ -6,7 +6,16 @@ import headerIcon from './styles/images/icon.png';
 import './styles/app.css';
 import './styles/fonts.css';
 
+type Props = {}
+
 class App extends Component {
+
+  props: Props
+
+  constructor(props: Props) {
+    super(props);
+  }
+
   render() {
     return (
       <div>
