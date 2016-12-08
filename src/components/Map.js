@@ -4,6 +4,8 @@ import React from 'react';
 import { GoogleMap, withGoogleMap } from 'react-google-maps';
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs';
 
+export type Coordinates = {lat: number, lng: number}
+
 // Initialize the higher order components and set their defaults below
 const MapBoilerplate = withScriptjs(withGoogleMap(props => (
   <GoogleMap

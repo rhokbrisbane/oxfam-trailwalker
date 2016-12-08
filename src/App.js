@@ -6,14 +6,24 @@ import headerIcon from './styles/images/icon.png';
 import './styles/app.css';
 import './styles/fonts.css';
 
+import type Coordinates from './components/Map';
+
 type Props = {}
 
 class App extends Component {
 
   props: Props
 
+  state: {
+    currentLocation: Coordinates
+  }
+
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      currentLocation: {lat: -27.6191977, lng: 133.2716991}
+    }
   }
 
   render() {
@@ -51,7 +61,7 @@ class App extends Component {
                 </div>
             </div>
 
-            <Map />
+            <Map center={this.state.currentLocation} defaultZoom={5} />
 
         </div>
       </div>
