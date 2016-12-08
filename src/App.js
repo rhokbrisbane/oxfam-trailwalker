@@ -10,21 +10,35 @@ import type Coordinates from './components/Map';
 
 type Props = {}
 
+// Constants
+const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
+const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
+
+// TODO: make these dynamic, calculated by the shortest/longest walks in the available dataset
+const MINIMUM_ROUTE_LENGTH = 0.5;
+const MAXIMUM_ROUTE_LENGTH = 5;
+
 class App extends Component {
 
   props: Props
 
   state: {
-    currentLocation: Coordinates
+    currentLocation: Coordinates,
+    targetLength: number
   }
 
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      currentLocation: {lat: -27.6191977, lng: 133.2716991}
+      currentLocation: {lat: -27.6191977, lng: 133.2716991},
+      targetLength: DEFAULT_ROUTE_TARGET_LENGTH,
     }
   }
+
+  updateTargetLength = (length: number) => this.setState({targetLength: Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH)})
+  makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
+  makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
 
   render() {
     return (
@@ -57,7 +71,8 @@ class App extends Component {
             <div className="filter-map-buttons">
                 <button className="submit lets-do-it">Find Friends!</button>
                 <div className="other-buttons">
-                    <button className="length" id="too_short">Too Short</button><button className="length" id="too_long">Too Long</button>
+                    <button className="length" onClick={this.makeTargetLengthLonger} >Too Short</button>
+                    <button className="length" onClick={this.makeTargetLengthShorter} >Too Long</button>
                 </div>
             </div>
 
