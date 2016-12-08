@@ -10,6 +10,12 @@ import type Coordinates from './components/Map';
 
 type Props = {}
 
+type Walk = {
+  trailName: string,
+  distance: number,
+  difficulty?: string
+}
+
 // Constants
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
@@ -24,7 +30,9 @@ class App extends Component {
 
   state: {
     currentLocation: Coordinates,
-    targetLength: number
+    targetLength: number,
+    currentWalk?: Walk,
+    loadedWalks?: {[key: string]: Walk}
   }
 
   constructor(props: Props) {
