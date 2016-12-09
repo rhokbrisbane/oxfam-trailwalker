@@ -1,6 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
+import Geolocator from 'geolocator';
 import Map from './components/Map';
 import headerIcon from './styles/images/icon.png';
 import './styles/app.css';
@@ -31,6 +32,7 @@ class App extends Component {
 
   state: {
     currentLocation: Coordinates,
+    zoom: number,
     targetLength: number,
     currentWalk?: Walk,
     loadedWalks?: {[key: string]: Walk}
@@ -41,8 +43,21 @@ class App extends Component {
 
     this.state = {
       currentLocation: {lat: -27.6191977, lng: 133.2716991},
+      zoom: 5,
       targetLength: DEFAULT_ROUTE_TARGET_LENGTH,
     }
+  }
+
+  componentDidMount() {
+    Geolocator.watch({maximumAge: 6000}, (err, location) => {
+      if (err) {
+        // TODO: Maybe this can fallback to asking the user for their postcode?
+        console.log("Geolocation error: ", err);
+        return;
+      }
+
+      this.setState({zoom: 12, currentLocation: {lat: location.coords.latitude, lng: location.coords.longitude}});
+    })
   }
 
   updateTargetLength = (length: number) => this.setState({targetLength: Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH)})
@@ -84,7 +99,7 @@ class App extends Component {
               </div>
           </div>
 
-          <Map center={this.state.currentLocation} defaultZoom={5} />
+          <Map center={this.state.currentLocation} zoom={this.state.zoom} />
 
       </div>
     );

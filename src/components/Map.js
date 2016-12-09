@@ -13,6 +13,7 @@ const MapBoilerplate = withScriptjs(withGoogleMap(props => (
   />
 )));
 
+// Fill in enough defaults to get the map working
 MapBoilerplate.defaultProps = {
   googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyD8MgbUf8RGv05GJ6qjrPLRg3Fvb4HTA9k",
   defaultZoom: 3,
@@ -22,6 +23,5 @@ MapBoilerplate.defaultProps = {
   mapElement: (<div id="map" />)
 }
 
-// Actually fill in our app-specific defaults here
 export default MapBoilerplate;
 
