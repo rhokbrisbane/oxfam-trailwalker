@@ -19,6 +19,7 @@ type Walk = {
 
 // Constants
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
+//const KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES = 0.25;
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
 const DEFAULT_TRAIL_NAME = "Yours to discover!";
 
