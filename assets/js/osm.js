@@ -29,6 +29,19 @@ function getOsmNodes(slat, slng, nlat, nlng, callback) {
     });
 }
 
+function getOsmWay(id, callback) {
+    var osmQuery = '[out:json];way(' + id + ')[highway=path][foot=yes][surface=ground];out body;>;out skel qt;';
+
+    var url = 'https://overpass-api.de/api/interpreter?data=' + osmQuery;
+
+    $.get(url, function(data) {
+        data = addNodeInformation(data);
+        data = addDistanceInformation(data);
+        
+        callback(data);
+    });
+}
+
 function addDistanceInformation(data) {
     var elementsWithDistance = data.elements.map(function(e) {
         if (onlyWays(e)) {
@@ -72,8 +85,6 @@ function addNodeInformation(data) {
 }
 
 function getWalkFromOsmDatasetById(data, id) {
-  var walks = [];
-
   for(var i = 0; i < data.elements.length; i++) {
       if (data.elements[i].id == id) {
         return data.elements[i];
