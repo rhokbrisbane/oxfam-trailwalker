@@ -12,6 +12,8 @@ type Props = {
   options?: Object
 }
 
+export const GOOGLE_MAPS_API_KEY = "AIzaSyD8MgbUf8RGv05GJ6qjrPLRg3Fvb4HTA9k";
+
 // Initialize the higher order components and set their defaults below
 const MapBoilerplate = withScriptjs(withGoogleMap(class extends Component {
   props: Props
@@ -180,7 +182,7 @@ const MapBoilerplate = withScriptjs(withGoogleMap(class extends Component {
 
 // Fill in enough defaults to get the map working
 MapBoilerplate.defaultProps = {
-  googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyD8MgbUf8RGv05GJ6qjrPLRg3Fvb4HTA9k",
+  googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`,
   defaultZoom: 3,
   defaultCenter: { lat: -25.363882, lng: 131.044922 },
   loadingElement: (<div />),

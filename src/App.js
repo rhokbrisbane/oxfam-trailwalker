@@ -2,12 +2,15 @@
 
 import React, { Component } from 'react';
 import Geolocator from 'geolocator';
-import Map from './components/Map';
+import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
 import headerIcon from './styles/images/icon.png';
 import './styles/app.css';
 import './styles/fonts.css';
 
 import type Coordinates from './components/Map';
+
+// workaround https://github.com/onury/geolocator/issues/42
+window.geolocator = Geolocator;
 
 type Props = {}
 
@@ -26,6 +29,12 @@ const DEFAULT_TRAIL_NAME = "Yours to discover!";
 // TODO: make these dynamic, calculated by the shortest/longest walks in the available dataset
 const MINIMUM_ROUTE_LENGTH = 0.5;
 const MAXIMUM_ROUTE_LENGTH = 5;
+
+Geolocator.config({
+  google: {
+    key: GOOGLE_MAPS_API_KEY
+  }
+})
 
 class App extends Component {
 
@@ -50,20 +59,31 @@ class App extends Component {
   }
 
   componentDidMount() {
-    Geolocator.watch({maximumAge: 6000}, (err, location) => {
+    this.findUsersCurrentLocation();
+  }
+
+  updateTargetLength = (length: number) => this.setState({targetLength: Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH)})
+  makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
+  makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
+
+  findUsersCurrentLocation = () => {
+    // This makes a callback function which updates the map at the callback location at a given zoom level
+    const updateFromLocation = (zoomLevel) => (err, location) => {
       if (err) {
         // TODO: Maybe this can fallback to asking the user for their postcode?
         console.log("Geolocation error: ", err);
         return;
       }
 
-      this.setState({zoom: 12, currentLocation: {lat: location.coords.latitude, lng: location.coords.longitude}});
-    })
-  }
+      this.setState({zoom: zoomLevel, currentLocation: {lat: location.coords.latitude, lng: location.coords.longitude}});
+    }
 
-  updateTargetLength = (length: number) => this.setState({targetLength: Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH)})
-  makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
-  makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
+    Geolocator.locateByIP({}, (err, location) => {
+      updateFromLocation(12)(err, location);
+
+      Geolocator.watch({ maximumAge: 6000}, updateFromLocation(13));
+    });
+  }
 
   render() {
     return (
