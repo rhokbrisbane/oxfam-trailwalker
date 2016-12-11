@@ -1,9 +1,15 @@
 /* @flow */
+/* global google */
 
 import React, { Component } from 'react';
 import Geolocator from 'geolocator';
 import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
+import { Marker, Polyline, DirectionsRenderer } from 'react-google-maps';
+
 import headerIcon from './styles/images/icon.png';
+import driveIcon from './styles/images/drive.svg';
+import walkIcon from './styles/images/walk.svg';
+
 import './styles/app.css';
 import './styles/fonts.css';
 
@@ -12,12 +18,16 @@ import type Coordinates from './components/Map';
 // workaround https://github.com/onury/geolocator/issues/42
 window.geolocator = Geolocator;
 
+// TODO: something better than this
+declare var google: Object;
+
 type Props = {}
 
 type Walk = {
   trailName: string,
   distance: number,
-  difficulty?: string
+  difficulty?: string,
+  nodePath: Array<Coordinates>
 }
 
 // Constants
@@ -42,10 +52,12 @@ class App extends Component {
 
   state: {
     currentLocation: Coordinates,
+    locationLoaded: boolean,
     zoom: number,
     targetLength: number,
     currentWalk?: Walk,
-    loadedWalks?: {[key: string]: Walk}
+    loadedWalks?: {[key: string]: Walk},
+    directionsToCurrentWalk?: Object
   }
 
   constructor(props: Props) {
@@ -53,8 +65,17 @@ class App extends Component {
 
     this.state = {
       currentLocation: {lat: -27.6191977, lng: 133.2716991},
+      locationLoaded: false,
       zoom: 5,
       targetLength: DEFAULT_ROUTE_TARGET_LENGTH,
+      currentWalk: {
+        trailName: "",
+        distance: 0.55,
+        nodePath: [
+          {lat: -27.4528109, lng: 152.9726514},
+          {lat: -27.454885, lng: 152.9715763}
+        ]
+      }
     }
   }
 
@@ -66,6 +87,24 @@ class App extends Component {
   makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
   makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
 
+  updateDirections = (from: Coordinates, to: Coordinates) => {
+    const DirectionsService = new google.maps.DirectionsService();
+
+    DirectionsService.route({
+      origin: from,
+      destination: to,
+      travelMode: google.maps.TravelMode.WALKING,
+    }, (result, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.setState({
+          directionsToCurrentWalk: result,
+        });
+      } else {
+        console.error(`error fetching directions ${result}`);
+      }
+    });
+  }
+
   findUsersCurrentLocation = () => {
     // This makes a callback function which updates the map at the callback location at a given zoom level
     const updateFromLocation = (zoomLevel) => (err, location) => {
@@ -75,7 +114,20 @@ class App extends Component {
         return;
       }
 
-      this.setState({zoom: zoomLevel, currentLocation: {lat: location.coords.latitude, lng: location.coords.longitude}});
+      const locationCoordinates = {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
+      }
+
+      this.setState({
+        zoom: zoomLevel,
+        currentLocation: locationCoordinates,
+        locationLoaded: true
+      });
+
+      if (this.state.currentWalk) {
+        this.updateDirections(locationCoordinates, this.state.currentWalk.nodePath[0]);
+      }
     }
 
     Geolocator.locateByIP({}, (err, location) => {
@@ -84,6 +136,51 @@ class App extends Component {
       Geolocator.watch({ maximumAge: 6000}, updateFromLocation(13));
     });
   }
+
+  renderCurrentWalk = () => {
+    if (!this.state.currentWalk) {
+      return [];
+    }
+
+    return [
+      <Polyline
+        key="walkPath"
+        options={{
+          geodesic: true,
+          strokeColor: "#50af47",
+          strokeOpacity: 0.5,
+          strokeWeight: 10
+        }}
+        path={this.state.currentWalk.nodePath}
+      />,
+      <DirectionsRenderer
+        key="directionsToWalk"
+        directions={this.state.directionsToCurrentWalk}
+        options={{
+          suppressMarkers: true,
+          polylineOptions: {
+            strokeColor: "#e70052",
+            strokeOpacity: 0.5,
+            strokeWeight: 5,
+          }
+        }}
+      />,
+      <Marker 
+        key="walkStartMarker"
+        position={this.state.currentWalk.nodePath[0]}
+        icon={{url: walkIcon, scaledSize: new google.maps.Size(30, 41.43)}}
+      />
+    ];
+  }
+
+  renderMapFeatures = () => ([
+    <Marker
+      key="currentLocationMarker"
+      position={this.state.currentLocation}
+      icon={{url: driveIcon, scaledSize: new google.maps.Size(30, 41.43)}}
+    />,
+    ...this.renderCurrentWalk()
+  ])
 
   render() {
     return (
@@ -95,7 +192,7 @@ class App extends Component {
               <div className="filter-search-track-details">
                   <span className="filter-search-name">{ this.state.currentWalk ? (this.state.currentWalk.trailName || DEFAULT_TRAIL_NAME) : "Finding Walks..." }</span>
                   { this.state.currentWalk && (<span className="filter-search-length">{this.state.currentWalk.distance}</span>) }
-                  { this.state.currentWalk && (<span className="filter-search-difficulty">{this.state.currentWalk.difficulty}</span>) }
+                  { this.state.currentWalk && this.state.currentWalk.difficulty && (<span className="filter-search-difficulty">{this.state.currentWalk.difficulty}</span>) }
               </div>
               <div className="filter-map-details">
               </div>
@@ -120,7 +217,9 @@ class App extends Component {
               </div>
           </div>
 
-          <Map center={this.state.currentLocation} zoom={this.state.zoom} />
+          <Map center={this.state.currentLocation} zoom={this.state.zoom}>
+            { this.state.locationLoaded && this.renderMapFeatures() }
+          </Map>
 
       </div>
     );
