@@ -30,7 +30,7 @@ function getOsmNodes(slat, slng, nlat, nlng, callback) {
 }
 
 function getOsmWay(id, callback) {
-    var osmQuery = '[out:json];way(' + id + ')[highway=path][foot=yes][surface=ground];out body;>;out skel qt;';
+    var osmQuery = '[out:json];way(' + id + ');out body;>;out skel qt;';
 
     var url = 'https://overpass-api.de/api/interpreter?data=' + osmQuery;
 
