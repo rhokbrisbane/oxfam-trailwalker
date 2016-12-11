@@ -205,26 +205,35 @@ function initMap() {
 
     getCurrentPosition(MapElement, true, function(pos) {
         CurrentPosition = pos;
-        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength);
+        setupRoutes(MapElement, CurrentPosition, CurrentTargetLength, location.hash);
     });
 }
 
-// Fetch a random route and render it
-function setupRoutes(map, pos, targetRouteLength) {
-    // TODO: here would be a good place to check for a static walk ID
-
-    // fetch a random walk from OSM near us
-    getOsmNodes(
-        pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
-        function(data) {
-            var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
-
-            renderWalk(walkRoute, pos);
-        }
-    );
+// Fetch route and render it
+function setupRoutes(map, pos, targetRouteLength, hashVal) {
+    if (hashVal) {
+        // check for a static walk ID, move location to there so we can load the walk
+        var hashValue = hashVal.split('#')[1]; 
+        getOsmWay(
+            hashValue,
+            function(data) {
+                var walkRoute = getWalkFromOsmDatasetById(data, hashValue);
+                renderWalk(walkRoute, pos);
+            }
+        );
+    } else {
+        // fetch a random walk from OSM near us
+        getOsmNodes(
+            pos.lat - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lng - KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lat + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            pos.lng + KM_RADIUS_TO_SEARCH_FOR_ROUTES_NEAR,
+            function(data) {
+                var walkRoute = getRandomWalkFromOsmDataset(data, targetRouteLength);
+                renderWalk(walkRoute, pos);
+            }
+        );
+    }
 }
 
 // Render a given walk route from the current position
