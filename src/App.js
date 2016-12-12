@@ -6,6 +6,8 @@ import Geolocator from 'geolocator';
 import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
 import { Marker, Polyline, DirectionsRenderer } from 'react-google-maps';
 
+import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
+
 import headerIcon from './styles/images/icon.png';
 import driveIcon from './styles/images/drive.svg';
 import walkIcon from './styles/images/walk.svg';
@@ -24,7 +26,7 @@ declare var google: Object;
 type Props = {}
 
 type Walk = {
-  trailName: string,
+  trailName?: string,
   distance: number,
   difficulty?: string,
   nodePath: Array<Coordinates>
@@ -32,7 +34,7 @@ type Walk = {
 
 // Constants
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
-//const KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES = 0.25;
+const KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES = 0.25;
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
 const DEFAULT_TRAIL_NAME = "Yours to discover!";
 
@@ -67,15 +69,7 @@ class App extends Component {
       currentLocation: {lat: -27.6191977, lng: 133.2716991},
       locationLoaded: false,
       zoom: 5,
-      targetLength: DEFAULT_ROUTE_TARGET_LENGTH,
-      currentWalk: {
-        trailName: "",
-        distance: 0.55,
-        nodePath: [
-          {lat: -27.4528109, lng: 152.9726514},
-          {lat: -27.454885, lng: 152.9715763}
-        ]
-      }
+      targetLength: DEFAULT_ROUTE_TARGET_LENGTH
     }
   }
 
@@ -83,7 +77,12 @@ class App extends Component {
     this.findUsersCurrentLocation();
   }
 
-  updateTargetLength = (length: number) => this.setState({targetLength: Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH)})
+  updateTargetLength = (length: number) => {
+    const normalizedLength = Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH);
+
+    this.setState({targetLength: normalizedLength})
+    this.getRandomWalk(this.state.currentLocation, normalizedLength);
+  }
   makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
   makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
 
@@ -125,6 +124,8 @@ class App extends Component {
         locationLoaded: true
       });
 
+      this.getRandomWalk(locationCoordinates, this.state.targetLength);
+
       if (this.state.currentWalk) {
         this.updateDirections(locationCoordinates, this.state.currentWalk.nodePath[0]);
       }
@@ -135,6 +136,30 @@ class App extends Component {
 
       Geolocator.watch({ maximumAge: 6000}, updateFromLocation(13));
     });
+  }
+
+  getRandomWalk = (currentLocation: Coordinates, targetLength: number) => {
+    getOsmNodes(
+      currentLocation.lat - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+      currentLocation.lng - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+      currentLocation.lat + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
+      currentLocation.lng + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
+      (data) => {
+        let randomWalk = getRandomWalkFromOsmDataset(data, targetLength);
+
+        if (!randomWalk) {
+          return;
+        }
+
+        this.setState({
+          currentWalk: {
+            trailName: randomWalk.tags.name,
+            distance: randomWalk.tags.distance,
+            difficulty: normalizePathDifficulty(randomWalk.tags.sac_scale),
+            nodePath: randomWalk.nodes
+          }
+        });
+      })
   }
 
   renderCurrentWalk = () => {
@@ -191,7 +216,7 @@ class App extends Component {
               </div>
               <div className="filter-search-track-details">
                   <span className="filter-search-name">{ this.state.currentWalk ? (this.state.currentWalk.trailName || DEFAULT_TRAIL_NAME) : "Finding Walks..." }</span>
-                  { this.state.currentWalk && (<span className="filter-search-length">{this.state.currentWalk.distance}</span>) }
+                  { this.state.currentWalk && (<span className="filter-search-length">{Math.round(this.state.currentWalk.distance * 10) / 10} km</span>) }
                   { this.state.currentWalk && this.state.currentWalk.difficulty && (<span className="filter-search-difficulty">{this.state.currentWalk.difficulty}</span>) }
               </div>
               <div className="filter-map-details">
