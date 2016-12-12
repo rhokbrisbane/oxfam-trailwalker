@@ -4,7 +4,8 @@
 import React, { Component } from 'react';
 import Geolocator from 'geolocator';
 import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
-import { Marker, Polyline, DirectionsRenderer } from 'react-google-maps';
+import Directions from './components/Map/Directions';
+import { Marker, Polyline } from 'react-google-maps';
 
 import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
 
@@ -86,24 +87,6 @@ class App extends Component {
   makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
   makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
 
-  updateDirections = (from: Coordinates, to: Coordinates) => {
-    const DirectionsService = new google.maps.DirectionsService();
-
-    DirectionsService.route({
-      origin: from,
-      destination: to,
-      travelMode: google.maps.TravelMode.WALKING,
-    }, (result, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.setState({
-          directionsToCurrentWalk: result,
-        });
-      } else {
-        console.error(`error fetching directions ${result}`);
-      }
-    });
-  }
-
   findUsersCurrentLocation = () => {
     // This makes a callback function which updates the map at the callback location at a given zoom level
     const updateFromLocation = (zoomLevel) => (err, location) => {
@@ -125,10 +108,6 @@ class App extends Component {
       });
 
       this.getRandomWalk(locationCoordinates, this.state.targetLength);
-
-      if (this.state.currentWalk) {
-        this.updateDirections(locationCoordinates, this.state.currentWalk.nodePath[0]);
-      }
     }
 
     Geolocator.locateByIP({}, (err, location) => {
@@ -178,17 +157,10 @@ class App extends Component {
         }}
         path={this.state.currentWalk.nodePath}
       />,
-      <DirectionsRenderer
+      <Directions
         key="directionsToWalk"
-        directions={this.state.directionsToCurrentWalk}
-        options={{
-          suppressMarkers: true,
-          polylineOptions: {
-            strokeColor: "#e70052",
-            strokeOpacity: 0.5,
-            strokeWeight: 5,
-          }
-        }}
+        from={this.state.currentLocation}
+        to={this.state.currentWalk.nodePath[0]}
       />,
       <Marker 
         key="walkStartMarker"
