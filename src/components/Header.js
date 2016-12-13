@@ -2,8 +2,7 @@
 
 import React from 'react';
 import headerIcon from '../styles/images/icon.png';
-
-import type { Walk } from '../App';
+import type { Walk } from '../Types';
 
 const DEFAULT_TRAIL_NAME = "Yours to discover!";
 

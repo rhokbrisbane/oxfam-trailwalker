@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { GoogleMap, withGoogleMap } from 'react-google-maps';
 
-export type Coordinates = { lat: number, lng: number }
+import type { Coordinates } from '../Types';
 declare var google: Object;
 
 export const GOOGLE_MAPS_API_KEY = "AIzaSyD8MgbUf8RGv05GJ6qjrPLRg3Fvb4HTA9k";

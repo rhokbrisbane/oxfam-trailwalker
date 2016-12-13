@@ -17,7 +17,7 @@ import walkIcon from './styles/images/walk.svg';
 import './styles/app.css';
 import './styles/fonts.css';
 
-import type { Coordinates } from './components/Map';
+import type { Coordinates, Walk } from './Types';
 
 // workaround https://github.com/onury/geolocator/issues/42
 window.geolocator = Geolocator;
@@ -26,13 +26,6 @@ window.geolocator = Geolocator;
 declare var google: Object;
 
 type Props = {}
-
-export type Walk = {
-  trailName?: string,
-  distance: number,
-  difficulty?: string,
-  nodePath: Array<Coordinates>
-}
 
 // Constants
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
