@@ -5,18 +5,18 @@ import React, { Component } from 'react';
 import Geolocator from 'geolocator';
 import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
 import Directions from './components/Map/Directions';
+import Header from './components/Header';
 import { Marker, Polyline } from 'react-google-maps';
 
 import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
 
-import headerIcon from './styles/images/icon.png';
 import driveIcon from './styles/images/drive.svg';
 import walkIcon from './styles/images/walk.svg';
 
 import './styles/app.css';
 import './styles/fonts.css';
 
-import type Coordinates from './components/Map';
+import type { Coordinates } from './components/Map';
 
 // workaround https://github.com/onury/geolocator/issues/42
 window.geolocator = Geolocator;
@@ -26,7 +26,7 @@ declare var google: Object;
 
 type Props = {}
 
-type Walk = {
+export type Walk = {
   trailName?: string,
   distance: number,
   difficulty?: string,
@@ -37,7 +37,6 @@ type Walk = {
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
 const KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES = 0.25;
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
-const DEFAULT_TRAIL_NAME = "Yours to discover!";
 
 // TODO: make these dynamic, calculated by the shortest/longest walks in the available dataset
 const MINIMUM_ROUTE_LENGTH = 0.5;
@@ -182,18 +181,9 @@ class App extends Component {
   render() {
     return (
       <div className="site-container">
-          <div className="filter-search-box">
-              <div className="filter-search-logo">
-                  <h1>Find Me A Walk<img src={headerIcon} alt="Logo" /></h1>
-              </div>
-              <div className="filter-search-track-details">
-                  <span className="filter-search-name">{ this.state.currentWalk ? (this.state.currentWalk.trailName || DEFAULT_TRAIL_NAME) : "Finding Walks..." }</span>
-                  { this.state.currentWalk && (<span className="filter-search-length">{Math.round(this.state.currentWalk.distance * 10) / 10} km</span>) }
-                  { this.state.currentWalk && this.state.currentWalk.difficulty && (<span className="filter-search-difficulty">{this.state.currentWalk.difficulty}</span>) }
-              </div>
-              <div className="filter-map-details">
-              </div>
-          </div>
+          <Header 
+            walk={this.state.currentWalk}
+          />
 
           <div className="filter-social-icons">
               <a href="https://www.facebook.com/Find-Me-A-Walk-1610148005948849/" target="_blank" rel="noopener noreferrer"><i className="fa fa-facebook" aria-hidden="true"></i></a>
