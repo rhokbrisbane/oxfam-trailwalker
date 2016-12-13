@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { PathDifficulty, WalkId } from '../Types';
+
 const PERCENTAGE_LEEWAY_FOR_TARGET_LENGTH = 0.2;
 const CLOSE_ENOUGH_TO_CONSIDER_ROUND_TRIP = 0.2 /* km */ ;
 
@@ -32,7 +34,7 @@ export function getOsmNodes(slat: number, slng: number, nlat: number, nlng: numb
     });
 }
 
-export function getOsmWay(id: string, callback: Function) {
+export function getOsmWay(id: WalkId, callback: Function) {
     var osmQuery = '[out:json];way(' + id + ');out body;>;out skel qt;';
 
     var url = 'https://overpass-api.de/api/interpreter?data=' + osmQuery;
@@ -89,7 +91,7 @@ function addNodeInformation(data: Object) {
     return data;
 }
 
-export function getWalkFromOsmDatasetById(data: Object, id: string) {
+export function getWalkFromOsmDatasetById(data: Object, id: WalkId) {
   for(var i = 0; i < data.elements.length; i++) {
       if (data.elements[i].id === id) {
         return data.elements[i];
@@ -135,7 +137,7 @@ function onlyWays(e) {
     return e.type === 'way';
 }
 
-export function normalizePathDifficulty(trailDifficutly: string): string {
+export function normalizePathDifficulty(trailDifficutly: string): PathDifficulty {
     if (!trailDifficutly) {
         return '';
     }
