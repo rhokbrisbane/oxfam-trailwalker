@@ -1,18 +1,22 @@
 /* @flow */
 /* global google */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { DirectionsRenderer } from 'react-google-maps';
+import { calcDistance } from 'geolocator';
 
 import type Coordinates from '../Map';
 declare var google: Object;
+
+// Fetch walking directions for starting points closer than this value
+const CLOSE_ENOUGH_TO_WALK_TO = 1 /* km */;
 
 type Props = {
   from: Coordinates,
   to: Coordinates
 }
 
-export default class extends Component {
+export default class extends React.PureComponent {
   props: Props
 
   state: {
@@ -25,18 +29,28 @@ export default class extends Component {
     this.state = {};
   }
 
-  updateDirections = () => {
-    if (!this.props.from || !this.props.to) {
+  updateDirections = (from: Coordinates, to: Coordinates) => {
+    if (!from || !to) {
       this.setState({directions: undefined});
       return;
+    }
+
+    const approximateDistanceToStart = calcDistance({
+      from: {latitude: from.lat, longitude: from.lng},
+      to: {latitude: to.lat, longitude: to.lng}
+    });
+
+    let travelMode = google.maps.TravelMode.DRIVING;
+    if (approximateDistanceToStart < CLOSE_ENOUGH_TO_WALK_TO) {
+      travelMode = google.maps.TravelMode.WALKING;
     }
 
     const DirectionsService = new google.maps.DirectionsService();
 
     DirectionsService.route({
-      origin: this.props.from,
-      destination: this.props.to,
-      travelMode: google.maps.TravelMode.WALKING,
+      origin: from,
+      destination: to,
+      travelMode: travelMode,
     }, (result, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         this.setState({
@@ -48,8 +62,12 @@ export default class extends Component {
     });
   }
 
-  componentDidUpdate() {
-    this.updateDirections();
+  componentDidMount() {
+    this.updateDirections(this.props.from, this.props.to);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    this.updateDirections(nextProps.from, nextProps.to);
   }
 
   render() {
