@@ -2,142 +2,45 @@
 /* global google */
 
 import React, { Component } from 'react';
-import Geolocator from 'geolocator';
-import Map, { GOOGLE_MAPS_API_KEY } from './components/Map';
+import { observer } from 'mobx-react';
+import Map from './components/Map';
 import Directions from './components/Map/Directions';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Marker, Polyline } from 'react-google-maps';
 
-import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
+import { State } from './State';
 
 import driveIcon from './styles/images/drive.svg';
 import walkIcon from './styles/images/walk.svg';
 
+import DevTools from 'mobx-react-devtools';
+
 import './styles/app.css';
 import './styles/fonts.css';
-
-import type { Coordinates, Walk } from './Types';
-
-// workaround https://github.com/onury/geolocator/issues/42
-window.geolocator = Geolocator;
 
 // TODO: something better than this
 declare var google: Object;
 
-type Props = {}
+type Props = {
+  store: State
+}
 
-// Constants
-const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
-const KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES = 0.25;
-const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
-
-// TODO: make these dynamic, calculated by the shortest/longest walks in the available dataset
-const MINIMUM_ROUTE_LENGTH = 0.5;
-const MAXIMUM_ROUTE_LENGTH = 5;
-
-Geolocator.config({
-  google: {
-    key: GOOGLE_MAPS_API_KEY
-  }
-})
-
+@observer
 class App extends Component {
 
   props: Props
 
-  state: {
-    currentLocation: Coordinates,
-    locationLoaded: boolean,
-    zoom: number,
-    targetLength: number,
-    currentWalk?: Walk,
-    loadedWalks?: {[key: string]: Walk},
-    directionsToCurrentWalk?: Object
-  }
-
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      currentLocation: {lat: -27.6191977, lng: 133.2716991},
-      locationLoaded: false,
-      zoom: 5,
-      targetLength: DEFAULT_ROUTE_TARGET_LENGTH
-    }
-  }
-
-  componentDidMount() {
-    this.findUsersCurrentLocation();
-  }
-
-  updateTargetLength = (length: number) => {
-    const normalizedLength = Math.max(Math.min(length, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH);
-
-    this.setState({targetLength: normalizedLength})
-    this.getRandomWalk(this.state.currentLocation, normalizedLength);
-  }
-  makeTargetLengthLonger = () => this.updateTargetLength(this.state.targetLength * ROUTE_LENGTHENING_PERCENTAGE)
-  makeTargetLengthShorter = () => this.updateTargetLength(this.state.targetLength / ROUTE_LENGTHENING_PERCENTAGE)
-
-  findUsersCurrentLocation = () => {
-    // This makes a callback function which updates the map at the callback location at a given zoom level
-    const updateFromLocation = (zoomLevel) => (err, location) => {
-      if (err) {
-        // TODO: Maybe this can fallback to asking the user for their postcode?
-        console.log("Geolocation error: ", err);
-        return;
-      }
-
-      const locationCoordinates = {
-        lat: location.coords.latitude,
-        lng: location.coords.longitude
-      }
-
-      this.setState({
-        zoom: zoomLevel,
-        currentLocation: locationCoordinates,
-        locationLoaded: true
-      });
-
-      this.getRandomWalk(locationCoordinates, this.state.targetLength);
-    }
-
-    Geolocator.locateByIP({}, (err, location) => {
-      updateFromLocation(12)(err, location);
-
-      Geolocator.watch({ maximumAge: 6000}, updateFromLocation(13));
-    });
-  }
-
-  getRandomWalk = (currentLocation: Coordinates, targetLength: number) => {
-    getOsmNodes(
-      currentLocation.lat - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
-      currentLocation.lng - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
-      currentLocation.lat + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
-      currentLocation.lng + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
-      (data) => {
-        let randomWalk = getRandomWalkFromOsmDataset(data, targetLength);
-
-        if (!randomWalk) {
-          return;
-        }
-
-        this.setState({
-          currentWalk: {
-            trailName: randomWalk.tags.name,
-            distance: randomWalk.tags.distance,
-            difficulty: normalizePathDifficulty(randomWalk.tags.sac_scale),
-            nodePath: randomWalk.nodes
-          }
-        });
-      })
-  }
-
+  makeTargetLengthLonger = () => this.props.store.wantLongerWalk()
+  makeTargetLengthShorter = () => this.props.store.wantShorterWalk()
+  
   renderCurrentWalk = () => {
-    if (!this.state.currentWalk) {
+    if (!this.props.store.currentWalk) {
       return [];
     }
+
+    let startPoint = this.props.store.currentWalk.nodePath[0];
+    console.log("renderCurrentWalk start point: ", toJS(startPoint))
 
     return [
       <Polyline
@@ -148,16 +51,16 @@ class App extends Component {
           strokeOpacity: 0.5,
           strokeWeight: 10
         }}
-        path={this.state.currentWalk.nodePath}
+        path={this.props.store.currentWalk.nodePath}
       />,
       <Directions
         key="directionsToWalk"
-        from={this.state.currentLocation}
-        to={this.state.currentWalk.nodePath[0]}
+        from={this.props.store.currentLocation}
+        to={this.props.store.walkStartingPoint}
       />,
       <Marker 
         key="walkStartMarker"
-        position={this.state.currentWalk.nodePath[0]}
+        position={this.props.store.currentWalk.nodePath[0]}
         icon={{url: walkIcon, scaledSize: new google.maps.Size(30, 41.43)}}
       />
     ];
@@ -166,17 +69,17 @@ class App extends Component {
   renderMapFeatures = () => ([
     <Marker
       key="currentLocationMarker"
-      position={this.state.currentLocation}
+      position={this.props.store.currentLocation}
       icon={{url: driveIcon, scaledSize: new google.maps.Size(30, 41.43)}}
     />,
     ...this.renderCurrentWalk()
   ])
-
+  
   render() {
     return (
       <div className="site-container">
           <Header 
-            walk={this.state.currentWalk}
+            walk={this.props.store.currentWalk}
           />
 
           <Footer />
@@ -189,10 +92,10 @@ class App extends Component {
               </div>
           </div>
 
-          <Map center={this.state.currentLocation} zoom={this.state.zoom}>
-            { this.state.locationLoaded && this.renderMapFeatures() }
+          <Map center={this.props.store.currentLocation} zoom={this.props.store.zoom}>
+            { this.props.store.locationLoaded && this.renderMapFeatures() }
           </Map>
-
+          { process.env.NODE_ENV === 'development' ? <DevTools /> : null}
       </div>
     );
   }
