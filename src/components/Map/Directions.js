@@ -31,13 +31,13 @@ export default class extends React.PureComponent {
 
   updateDirections = (from: Coordinates, to: Coordinates) => {
     if (!from || !to) {
-      this.setState({directions: undefined});
+      this.setState({ directions: undefined });
       return;
     }
 
     const approximateDistanceToStart = calcDistance({
-      from: {latitude: from.lat, longitude: from.lng},
-      to: {latitude: to.lat, longitude: to.lng}
+      from: { latitude: from.lat, longitude: from.lng },
+      to: { latitude: to.lat, longitude: to.lng }
     });
 
     let travelMode = google.maps.TravelMode.DRIVING;
@@ -86,7 +86,7 @@ export default class extends React.PureComponent {
             strokeWeight: 5,
           }
         }}
-      />
+        />
     )
   }
 }

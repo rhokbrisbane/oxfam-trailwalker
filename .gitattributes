@@ -1,0 +1,2 @@
+# npm install --save always reformats this file to unix line endings, so git should check it out that way by default
+package.json text eol=lf

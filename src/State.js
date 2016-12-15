@@ -33,122 +33,122 @@ export class State {
   @observable currentWalkId: WalkId = this.getIdFromUrl();
 
   @computed get walkStartingPoint(): ?Coordinates {
-    if (!this.currentWalk) {
-      return null;
-    }
+    if(!this.currentWalk) {
+  return null;
+}
 
-    return this.currentWalk.nodePath[0];
+return this.currentWalk.nodePath[0];
   }
 
-  @action wantLongerWalk() {
-    this.targetLength *= ROUTE_LENGTHENING_PERCENTAGE; 
+@action wantLongerWalk() {
+  this.targetLength *= ROUTE_LENGTHENING_PERCENTAGE;
+}
+
+@action wantShorterWalk() {
+  this.targetLength /= ROUTE_LENGTHENING_PERCENTAGE;
+}
+
+@action successfulGeolocation(location: Object, zoomLevel: number) {
+  this.locationLoaded = true;
+  this.currentLocation = {
+    lat: location.coords.latitude,
+    lng: location.coords.longitude
   }
+  this.zoom = 12;
+}
 
-  @action wantShorterWalk() {
-    this.targetLength /= ROUTE_LENGTHENING_PERCENTAGE;
-  }
+@action loadWalkId(walkId: WalkId) {
+  this.currentWalkId = walkId;
+  window.location.hash = walkId;
+}
 
-  @action successfulGeolocation(location: Object, zoomLevel: number) {
-    this.locationLoaded = true;
-    this.currentLocation = {
-      lat: location.coords.latitude,
-      lng: location.coords.longitude
-    }
-    this.zoom = 12;
-  }
+@action updateCurrentWalk(walk: Walk) {
+  this.loadWalkId(walk.id);
+  this.currentWalk = walk;
+}
 
-  @action loadWalkId(walkId: WalkId) {
-    this.currentWalkId = walkId;
-    window.location.hash = walkId;
-  }
+@action findAnotherWalk() {
+  this.currentWalk = undefined;
+}
 
-  @action updateCurrentWalk(walk: Walk) {
-    this.loadWalkId(walk.id);
-    this.currentWalk = walk;
-  }
+getIdFromUrl() {
+  const hashWithId = window.location.hash;
+  return hashWithId.slice(1);
+}
 
-  @action findAnotherWalk() {
-    this.currentWalk = undefined;
-  }
+constructor() {
+  // Normalize targetLength
+  intercept(this, 'targetLength', (change) => {
+    change.newValue = Math.max(Math.min(change.newValue, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH);
+    return change;
+  });
 
-  getIdFromUrl() {
-    const hashWithId = window.location.hash;
-    return hashWithId.slice(1);
-  }
-
-  constructor() {
-    // Normalize targetLength
-    intercept(this, 'targetLength', (change) => {
-      change.newValue = Math.max(Math.min(change.newValue, MAXIMUM_ROUTE_LENGTH), MINIMUM_ROUTE_LENGTH);
-      return change;
-    });
-
-    when(
-      "Find our our location when we don't have one",
-      () => !this.locationLoaded,
-      () => {
-        Geolocator.watch({ maximumAge: 6000}, (err, location) => {
-          if (err) {
-            console.log(`Geolocation watch error: ${err}, falling back to IP`);
-            Geolocator.locateByIP({}, (err, location) => {
-              if (err) {
-                console.log(`Geolocation IP error: ${err}`);
-                this.locationLoaded = true;
-                return;
-              }
-              this.successfulGeolocation(location, 13);
-            });
-            return;
-          }
-          this.successfulGeolocation(location, 13);
-        });
-      }
-    );
-
-    reaction(
-      "Load a new walk when we don't have a current walk",
-      () => !this.currentWalk && this.locationLoaded,
-      (valid) => {
-        if (!valid) {
-          return;
-        }
-
-        getOsmNodes(
-          this.currentLocation.lat - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
-          this.currentLocation.lng - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
-          this.currentLocation.lat + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
-          this.currentLocation.lng + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES, 
-          (data) => {
-            let randomWalk = getRandomWalkFromOsmDataset(data, this.targetLength);
-
-            if (!randomWalk) {
-              console.log("No walks found - what do?");
+  when(
+    "Find our our location when we don't have one",
+    () => !this.locationLoaded,
+    () => {
+      Geolocator.watch({ maximumAge: 6000 }, (err, location) => {
+        if (err) {
+          console.log(`Geolocation watch error: ${err}, falling back to IP`);
+          Geolocator.locateByIP({}, (err, location) => {
+            if (err) {
+              console.log(`Geolocation IP error: ${err}`);
+              this.locationLoaded = true;
               return;
             }
+            this.successfulGeolocation(location, 13);
+          });
+          return;
+        }
+        this.successfulGeolocation(location, 13);
+      });
+    }
+  );
 
-            const walk: Walk = {
-                id: randomWalk.id,
-                trailName: randomWalk.tags.name,
-                distance: randomWalk.tags.distance,
-                difficulty: normalizePathDifficulty(randomWalk.tags.sac_scale),
-                nodePath: randomWalk.nodes
-              }
-
-            this.updateCurrentWalk(walk);
-          })
+  reaction(
+    "Load a new walk when we don't have a current walk",
+    () => !this.currentWalk && this.locationLoaded,
+    (valid) => {
+      if (!valid) {
+        return;
       }
-    );
 
-    reaction(
-      "Look for a new walk when we change the target length",
-      () => this.targetLength,
-      () => this.findAnotherWalk()
-    );
+      getOsmNodes(
+        this.currentLocation.lat - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+        this.currentLocation.lng - KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+        this.currentLocation.lat + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+        this.currentLocation.lng + KM_RADIUS_TO_SEARCH_FOR_NEARBY_ROUTES,
+        (data) => {
+          let randomWalk = getRandomWalkFromOsmDataset(data, this.targetLength);
 
-    window.addEventListener('hashchange', () => {
-      this.loadWalkId(this.getIdFromUrl());
-    });
-  }
+          if (!randomWalk) {
+            console.log("No walks found - what do?");
+            return;
+          }
+
+          const walk: Walk = {
+            id: randomWalk.id,
+            trailName: randomWalk.tags.name,
+            distance: randomWalk.tags.distance,
+            difficulty: normalizePathDifficulty(randomWalk.tags.sac_scale),
+            nodePath: randomWalk.nodes
+          }
+
+          this.updateCurrentWalk(walk);
+        })
+    }
+  );
+
+  reaction(
+    "Look for a new walk when we change the target length",
+    () => this.targetLength,
+    () => this.findAnotherWalk()
+  );
+
+  window.addEventListener('hashchange', () => {
+    this.loadWalkId(this.getIdFromUrl());
+  });
+}
 }
 
 export default new State();

@@ -33,7 +33,7 @@ class App extends Component {
 
   makeTargetLengthLonger = () => this.props.store.wantLongerWalk()
   makeTargetLengthShorter = () => this.props.store.wantShorterWalk()
-  
+
   renderCurrentWalk = () => {
     if (!this.props.store.currentWalk) {
       return [];
@@ -49,17 +49,17 @@ class App extends Component {
           strokeWeight: 10
         }}
         path={this.props.store.currentWalk.nodePath}
-      />,
+        />,
       <Directions
         key="directionsToWalk"
         from={this.props.store.currentLocation}
         to={this.props.store.walkStartingPoint}
-      />,
-      <Marker 
+        />,
+      <Marker
         key="walkStartMarker"
         position={this.props.store.currentWalk.nodePath[0]}
-        icon={{url: walkIcon, scaledSize: new google.maps.Size(30, 41.43)}}
-      />
+        icon={{ url: walkIcon, scaledSize: new google.maps.Size(30, 41.43) }}
+        />
     ];
   }
 
@@ -67,32 +67,32 @@ class App extends Component {
     <Marker
       key="currentLocationMarker"
       position={this.props.store.currentLocation}
-      icon={{url: driveIcon, scaledSize: new google.maps.Size(30, 41.43)}}
-    />,
+      icon={{ url: driveIcon, scaledSize: new google.maps.Size(30, 41.43) }}
+      />,
     ...this.renderCurrentWalk()
   ])
-  
+
   render() {
     return (
       <div className="site-container">
-          <Header 
-            walk={this.props.store.currentWalk}
+        <Header
+          walk={this.props.store.currentWalk}
           />
 
-          <Footer />
+        <Footer />
 
-          <div className="filter-map-buttons">
-              <button className="submit lets-do-it">Find Friends!</button>
-              <div className="other-buttons">
-                  <button className="length" onClick={this.makeTargetLengthLonger} >Too Short</button>
-                  <button className="length" onClick={this.makeTargetLengthShorter} >Too Long</button>
-              </div>
+        <div className="filter-map-buttons">
+          <button className="submit lets-do-it">Find Friends!</button>
+          <div className="other-buttons">
+            <button className="length" onClick={this.makeTargetLengthLonger} >Too Short</button>
+            <button className="length" onClick={this.makeTargetLengthShorter} >Too Long</button>
           </div>
+        </div>
 
-          <Map center={this.props.store.currentLocation} zoom={this.props.store.zoom}>
-            { this.props.store.locationLoaded && this.renderMapFeatures() }
-          </Map>
-          { process.env.NODE_ENV === 'development' ? <DevTools /> : null}
+        <Map center={this.props.store.currentLocation} zoom={this.props.store.zoom}>
+          {this.props.store.locationLoaded && this.renderMapFeatures()}
+        </Map>
+        {process.env.NODE_ENV === 'development' ? <DevTools /> : null}
       </div>
     );
   }
