@@ -5,7 +5,7 @@ import Geolocator from 'geolocator';
 import { GOOGLE_MAPS_API_KEY } from './components/Map';
 import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
 
-import type { Coordinates, Walk } from './Types';
+import type { Coordinates, Walk, WalkId } from './Types';
 
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
@@ -30,6 +30,7 @@ export class State {
   @observable zoom: number = 5;
   @observable targetLength: number = DEFAULT_ROUTE_TARGET_LENGTH;
   @observable currentWalk: ?Walk;
+  @observable currentWalkId: WalkId = this.getIdFromUrl();
 
   @computed get walkStartingPoint(): ?Coordinates {
     if (!this.currentWalk) {
@@ -56,12 +57,23 @@ export class State {
     this.zoom = 12;
   }
 
+  @action loadWalkId(walkId: WalkId) {
+    this.currentWalkId = walkId;
+    window.location.hash = walkId;
+  }
+
   @action updateCurrentWalk(walk: Walk) {
+    this.loadWalkId(walk.id);
     this.currentWalk = walk;
   }
 
   @action findAnotherWalk() {
     this.currentWalk = undefined;
+  }
+
+  getIdFromUrl() {
+    const hashWithId = window.location.hash;
+    return hashWithId.slice(1);
   }
 
   constructor() {
@@ -115,6 +127,7 @@ export class State {
             }
 
             const walk: Walk = {
+                id: randomWalk.id,
                 trailName: randomWalk.tags.name,
                 distance: randomWalk.tags.distance,
                 difficulty: normalizePathDifficulty(randomWalk.tags.sac_scale),
@@ -130,7 +143,11 @@ export class State {
       "Look for a new walk when we change the target length",
       () => this.targetLength,
       () => this.findAnotherWalk()
-    )
+    );
+
+    window.addEventListener('hashchange', () => {
+      this.loadWalkId(this.getIdFromUrl());
+    });
   }
 }
 
