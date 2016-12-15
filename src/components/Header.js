@@ -7,7 +7,7 @@ import type { Walk } from '../Types';
 const DEFAULT_TRAIL_NAME = "Yours to discover!";
 
 type Props = {
-    walk?: Walk
+    walk: ?Walk
 }
 
 export default (props: Props) => 

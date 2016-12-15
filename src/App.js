@@ -39,9 +39,6 @@ class App extends Component {
       return [];
     }
 
-    let startPoint = this.props.store.currentWalk.nodePath[0];
-    console.log("renderCurrentWalk start point: ", toJS(startPoint))
-
     return [
       <Polyline
         key="walkPath"

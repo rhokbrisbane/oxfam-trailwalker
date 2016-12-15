@@ -29,8 +29,7 @@ export class State {
   @observable locationLoaded: boolean = false;
   @observable zoom: number = 5;
   @observable targetLength: number = DEFAULT_ROUTE_TARGET_LENGTH;
-  @observable currentWalk: Walk;
-  @observable walkError: string;
+  @observable currentWalk: ?Walk;
 
   @computed get walkStartingPoint(): ?Coordinates {
     if (!this.currentWalk) {
