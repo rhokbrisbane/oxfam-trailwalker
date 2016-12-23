@@ -6,6 +6,7 @@ import { observer } from 'mobx-react';
 import Map from './components/Map';
 import Directions from './components/Map/Directions';
 import Header from './components/Header';
+import BottomActions from './components/BottomActions';
 import Footer from './components/Footer';
 import { Marker, Polyline } from 'react-google-maps';
 
@@ -30,9 +31,6 @@ type Props = {
 class App extends Component {
 
   props: Props
-
-  makeTargetLengthLonger = () => this.props.store.wantLongerWalk()
-  makeTargetLengthShorter = () => this.props.store.wantShorterWalk()
 
   renderCurrentWalk = () => {
     if (!this.props.store.currentWalk) {
@@ -79,19 +77,17 @@ class App extends Component {
           walk={this.props.store.currentWalk}
           />
 
-        <Footer />
-
-        <div className="filter-map-buttons">
-          <button className="submit lets-do-it">Find Friends!</button>
-          <div className="other-buttons">
-            <button className="length" onClick={this.makeTargetLengthLonger} >Too Short</button>
-            <button className="length" onClick={this.makeTargetLengthShorter} >Too Long</button>
-          </div>
-        </div>
-
         <Map center={this.props.store.currentLocation} zoom={this.props.store.zoom}>
           {this.props.store.locationLoaded && this.renderMapFeatures()}
         </Map>
+
+        <BottomActions
+          onTooShortClick={this.props.store.wantLongerWalk}
+          onTooLongClick={this.props.store.wantShorterWalk}
+          />
+
+        <Footer />
+
         {process.env.NODE_ENV === 'development' ? <DevTools /> : null}
       </div>
     );
