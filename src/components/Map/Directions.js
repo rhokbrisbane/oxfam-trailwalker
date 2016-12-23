@@ -67,6 +67,13 @@ export default class extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps: Props) {
+    if (this.props.from.lat === nextProps.from.lat
+      && this.props.from.lng === nextProps.from.lng
+      && this.props.to.lat === nextProps.to.lat
+      && this.props.to.lng === nextProps.to.lng) {
+      return;
+    }
+
     this.updateDirections(nextProps.from, nextProps.to);
   }
 
