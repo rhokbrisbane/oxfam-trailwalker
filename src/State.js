@@ -28,6 +28,9 @@ Geolocator.config({
 export class State {
   @observable currentLocation: Coordinates = { lat: -27.6191977, lng: 133.2716991 };
   @observable locationLoaded: boolean = false;
+
+  // The location we were at when we loaded the walk (as opposed to where we are right now)
+  @observable startingLocation: Coordinates = this.currentLocation;
   @observable zoom: number = 5;
   @observable targetLength: number = DEFAULT_ROUTE_TARGET_LENGTH;
   @observable currentWalk: ?Walk;
@@ -66,6 +69,7 @@ export class State {
   @autobind @action updateCurrentWalk(walk: Walk) {
     this.loadWalkId(walk.id);
     this.currentWalk = walk;
+    this.startingLocation = this.currentLocation;
   }
 
   @autobind @action findAnotherWalk() {

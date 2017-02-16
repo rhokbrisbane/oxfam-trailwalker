@@ -50,7 +50,7 @@ class App extends Component {
         />,
       <Directions
         key="directionsToWalk"
-        from={this.props.store.currentLocation}
+        from={this.props.store.startingLocation}
         to={this.props.store.walkStartingPoint}
         />,
       <Marker
@@ -77,7 +77,7 @@ class App extends Component {
           walk={this.props.store.currentWalk}
           />
 
-        <Map center={this.props.store.currentLocation} zoom={this.props.store.zoom}>
+        <Map zoom={this.props.store.zoom}>
           {this.props.store.locationLoaded && this.renderMapFeatures()}
         </Map>
 
