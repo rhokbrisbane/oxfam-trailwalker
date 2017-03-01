@@ -8,3 +8,9 @@ script:
   - flow check
   - npm test
   - npm run build
+after_success:
+  - bash deploy.sh
+env:
+  global:
+    # GH_TOKEN
+    secure: HVSdLMaoinW8dPKaRGzCWF0Oq0ivqlkFdlcMFaT/sfHa1nPoboE2TTJFUhwxJ5DS98wrqiB/z12TJ1JGD1vHN08ZAFUgs+Fd5N10yJ/i3CncnNLpiFAVFKt5VUN0lH4h7j59SINF4tElqFYcJfe2zaXHeMSjTuKPEXcE/GUEFhUVjF7gDkHA2ODuop7Qnnx7AP4KMhorJN8X/kYg0kHbz9JMKbx9ESLuKt+nbzHik5QPxu+hg4CaPm6H8Vcnh3h6zlOSsYBcRz4Hdu/W/e+Xf5wfA3vVG+RZ5gooMcQHg40H/tPyDVbUMM0qCEhD8VognqLBz2IRgmxbyuojJKAUBF9K75szcihDw7SinGmWxHbCtLETA661lT8+QXDspdt8o8Kf5fsBwOrMXwjQJrsh1mIDpiFgE3kbzda+yOpFDwA8vH0UgTGWFUW+ZlnIe11mG8/7RHshBNSMijAvfLwj1jpbhbUV1Bv0TKIdnIz2pOf6ANXT2EG+7Z5Ec8D4jWx9h49x48deup01R0fVeYHeM4/8y6VNXwz0ah1mJIjzEsv1vXjye4FkQ3w27g0srEhsNMD6n+lFFJeaMyUpKJyMwy+wIvzId2KzbCZR3D1bHoOLq7jC6poBdyPAIDtXAN/hWPV+djhwhNb91TDiV2gisNGEU8FAWNYSJPGqNc9Sr08=
