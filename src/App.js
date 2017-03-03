@@ -47,17 +47,17 @@ class App extends Component {
           strokeWeight: 10
         }}
         path={this.props.store.currentWalk.nodePath}
-        />,
+      />,
       <Directions
         key="directionsToWalk"
         from={this.props.store.startingLocation}
         to={this.props.store.walkStartingPoint}
-        />,
+      />,
       <Marker
         key="walkStartMarker"
         position={this.props.store.currentWalk.nodePath[0]}
         icon={{ url: walkIcon, scaledSize: new google.maps.Size(30, 41.43) }}
-        />
+      />
     ];
   }
 
@@ -66,7 +66,7 @@ class App extends Component {
       key="currentLocationMarker"
       position={this.props.store.currentLocation}
       icon={{ url: driveIcon, scaledSize: new google.maps.Size(30, 41.43) }}
-      />,
+    />,
     ...this.renderCurrentWalk()
   ])
 
@@ -75,16 +75,18 @@ class App extends Component {
       <div className="site-container">
         <Header
           walk={this.props.store.currentWalk}
-          />
+        />
 
-        <Map zoom={this.props.store.zoom}>
+        <Map zoom={this.props.store.viewportZoom}
+          center={this.props.store.viewportCenter}
+          viewportHasUpdated={this.props.store.updateViewport}>
           {this.props.store.locationLoaded && this.renderMapFeatures()}
         </Map>
 
         <BottomActions
           onTooShortClick={this.props.store.wantLongerWalk}
           onTooLongClick={this.props.store.wantShorterWalk}
-          />
+        />
 
         <Footer />
 

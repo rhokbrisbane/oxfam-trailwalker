@@ -20,6 +20,10 @@ global.google = {
       };
     },
 
+    event: {
+      addListener: () => { }
+    },
+
     OverlayView: () => { },
     InfoWindow: () => { },
     Marker: () => { },

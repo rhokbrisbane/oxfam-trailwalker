@@ -6,7 +6,7 @@ import Geolocator from 'geolocator';
 import { GOOGLE_MAPS_API_KEY } from './components/Map';
 import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
 
-import type { Coordinates, Walk, WalkId } from './Types';
+import type { Coordinates, Bounds, Walk, WalkId } from './Types';
 
 const DEFAULT_ROUTE_TARGET_LENGTH = 5 /* km */;
 const ROUTE_LENGTHENING_PERCENTAGE = 1.5;
@@ -29,9 +29,14 @@ export class State {
   @observable currentLocation: Coordinates = { lat: -27.6191977, lng: 133.2716991 };
   @observable locationLoaded: boolean = false;
 
+  // What the viewport is currently centered on
+  @observable viewportCenter: Coordinates = this.currentLocation;
+  @observable viewportBounds: Bounds = { ne: this.currentLocation, sw: this.currentLocation };
+  @observable viewportZoom: number = 5;
+
   // The location we were at when we loaded the walk (as opposed to where we are right now)
   @observable startingLocation: Coordinates = this.currentLocation;
-  @observable zoom: number = 5;
+
   @observable targetLength: number = DEFAULT_ROUTE_TARGET_LENGTH;
   @observable currentWalk: ?Walk;
   @observable currentWalkId: WalkId = this.getIdFromUrl();
@@ -58,7 +63,7 @@ export class State {
       lat: location.coords.latitude,
       lng: location.coords.longitude
     }
-    this.zoom = 12;
+    this.viewportZoom = zoomLevel;
   }
 
   @autobind @action loadWalkId(walkId: WalkId) {
@@ -74,6 +79,14 @@ export class State {
 
   @autobind @action findAnotherWalk() {
     this.currentWalk = undefined;
+  }
+
+  @autobind @action updateViewport(center: Coordinates, bounds: ?Bounds) {
+    this.viewportCenter = center;
+
+    if (bounds) {
+      this.viewportBounds = bounds;
+    }
   }
 
   getIdFromUrl() {
@@ -97,16 +110,24 @@ export class State {
             console.log(`Geolocation watch error: ${err}, falling back to IP`);
             Geolocator.locateByIP({}, (err, location) => {
               if (err) {
+                // TODO: present "enter your location" box?
                 console.log(`Geolocation IP error: ${err}`);
                 this.locationLoaded = true;
                 return;
               }
-              this.successfulGeolocation(location, 13);
+              this.successfulGeolocation(location, 12);
             });
             return;
           }
-          this.successfulGeolocation(location, 13);
+          this.successfulGeolocation(location, 12);
         });
+      }
+    );
+
+    when("the first time our location has been found, move our viewport to it",
+      () => this.locationLoaded,
+      () => {
+        this.updateViewport(this.currentLocation);
       }
     );
 

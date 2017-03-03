@@ -11,9 +11,22 @@ export const GOOGLE_MAPS_API_KEY = "AIzaSyD8MgbUf8RGv05GJ6qjrPLRg3Fvb4HTA9k";
 // Initialize the higher order components and set their defaults below
 const MainMap = withGoogleMap(class extends Component {
 
+  _map: Object;
+
   // TODO: Remove after https://github.com/facebook/flow/issues/3008 is resolved
   static set defaultProps(dummy) {
     // zzz
+  }
+
+  // Keep a reference to the google maps object for things that don't natively tie into react
+  handleMapMounted = (map) => {
+    this._map = map;
+  }
+
+  // re-fire this event with what the bounds/center values changed to, rather than.. nothing?
+  handleBoundsChanged = () => {
+    return this.props.viewportHasUpdated
+      && this.props.viewportHasUpdated(this._map.getCenter(), this._map.getBounds());
   }
 
   static get defaultProps() {
@@ -162,8 +175,10 @@ const MainMap = withGoogleMap(class extends Component {
 
   render() {
     return (<GoogleMap
+      ref={this.handleMapMounted}
+      onBoundsChanged={this.handleBoundsChanged}
       {...this.props}
-      />)
+    />)
   }
 });
 
