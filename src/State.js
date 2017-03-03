@@ -1,7 +1,6 @@
 /* @flow */
 
 import { observable, action, intercept, when, reaction, computed } from 'mobx';
-import { autobind } from 'core-decorators';
 import Geolocator from 'geolocator';
 import { GOOGLE_MAPS_API_KEY } from './components/Map';
 import { getOsmNodes, getRandomWalkFromOsmDataset, normalizePathDifficulty } from './api/osm';
@@ -49,15 +48,15 @@ export class State {
     return this.currentWalk.nodePath[0];
   }
 
-  @autobind @action wantLongerWalk() {
+  @action.bound wantLongerWalk() {
     this.targetLength *= ROUTE_LENGTHENING_PERCENTAGE;
   }
 
-  @autobind @action wantShorterWalk() {
+  @action.bound wantShorterWalk() {
     this.targetLength /= ROUTE_LENGTHENING_PERCENTAGE;
   }
 
-  @autobind @action successfulGeolocation(location: Object, zoomLevel: number) {
+  @action.bound successfulGeolocation(location: Object, zoomLevel: number) {
     this.locationLoaded = true;
     this.currentLocation = {
       lat: location.coords.latitude,
@@ -66,22 +65,22 @@ export class State {
     this.viewportZoom = zoomLevel;
   }
 
-  @autobind @action loadWalkId(walkId: WalkId) {
+  @action.bound loadWalkId(walkId: WalkId) {
     this.currentWalkId = walkId;
     window.location.hash = walkId;
   }
 
-  @autobind @action updateCurrentWalk(walk: Walk) {
+  @action.bound updateCurrentWalk(walk: Walk) {
     this.loadWalkId(walk.id);
     this.currentWalk = walk;
     this.startingLocation = this.currentLocation;
   }
 
-  @autobind @action findAnotherWalk() {
+  @action.bound findAnotherWalk() {
     this.currentWalk = undefined;
   }
 
-  @autobind @action updateViewport(center: Coordinates, bounds: ?Bounds) {
+  @action.bound updateViewport(center: Coordinates, bounds: ?Bounds) {
     this.viewportCenter = center;
 
     if (bounds) {
@@ -131,8 +130,8 @@ export class State {
       }
     );
 
+    // Load a new walk when we don't have a current walk
     reaction(
-      "Load a new walk when we don't have a current walk",
       () => !this.currentWalk && this.locationLoaded,
       (valid) => {
         if (!valid) {
@@ -162,13 +161,15 @@ export class State {
 
             this.updateCurrentWalk(walk);
           })
-      }
+      },
+      { name: "Load a new walk when we don't have a current walk" }
     );
 
+    // Look for a new walk when we change target length
     reaction(
-      "Look for a new walk when we change the target length",
       () => this.targetLength,
-      () => this.findAnotherWalk()
+      () => this.findAnotherWalk(),
+      { name: "Look for a new walk when we change target length" }
     );
 
     window.addEventListener('hashchange', () => {
