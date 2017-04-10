@@ -88,6 +88,10 @@ export class State {
     }
   }
 
+  @action.bound failedGeolocation() {
+    this.locationLoaded = true;
+  }
+
   getIdFromUrl() {
     const hashWithId = window.location.hash;
     return hashWithId.slice(1);
@@ -111,7 +115,7 @@ export class State {
               if (err) {
                 // TODO: present "enter your location" box?
                 console.log(`Geolocation IP error: ${err}`);
-                this.locationLoaded = true;
+                this.failedGeolocation();
                 return;
               }
               this.successfulGeolocation(location, 12);
