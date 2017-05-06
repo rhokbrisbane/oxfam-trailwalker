@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - stable
+cache:
+  directories:
+    - node_modules
+script:
+  - flow check
+  - npm test
+  - npm run build
+after_success:
+  - bash deploy.sh
+env:
+  global:
+    # GH_TOKEN
+    secure: IhOI3nKJmp2Y1KL9Z139rEjStNBYf1UCVrChK93UNxGlp8lyUIOyucQwS5iP9wFyZtrtuGl59m+pSel/SaIhQJBheww8Q0g57bIPLpvB43ZhX+jImH19r6fB4bbAyN9+PvFc8FgEDJufWnU66bEnb9dmJ6FmbZXsCeSljQehmm7DONdMtVWzbmFT/CeVtMLbL4xbM/yCvNoUBIpHJy0YwM2GZLgziIaAaGqRGxBwP1sXFzyXSf1jofR7J7huZjW1tL37j8i80AgCunVhhSAsu9DpzIZjyOC05vA/hLeEgzOd5NYjHAEOsEhaB6vkPRLZadbaA57ih6tPX3IpNId9IjmCNMyggr4L/EXzYkUyBNE+lUwjijGzn0jfiqmR6/8+ys3GzkZwt2690Dysr58czq0KUhtsIN4JPsLvxWXgqNsHarGeWzNpLVvi5gihE4EfwKRdCeAi020p9Mt1X5CxmFYc7UlBfsoQ/3Zdm3WxRAame31sH2zP8S93eGjFj6yaAV3/Vl7wRZsgI9ibsJtnuchsDPdzxcWYS9C6KjPWtWzrhNhYbeWaXSKjmyM2/odCklPnIEbRYurzPU154sD9EArYcChERmtDOHxrtgDp7suSWBjppFHT9qDvDuipj10O/jv7eAY23kQE9z4JmPP0bJWkORo7RzF9GqAvANfcGhM=
