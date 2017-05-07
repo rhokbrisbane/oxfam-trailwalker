@@ -2,7 +2,7 @@
   "name": "oxfam-trailwalker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rawgit.com/findmeawalk-ci/builds/switch-to-react/",
+  "homepage": "https://findmeawalk.com/",
   "devDependencies": {
     "custom-react-scripts": "0.0.23",
     "flow-bin": "^0.36.0",
